@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PINFOLIO</title>
+  <title>Pinfolio – Your Style. Your Links. Your Store.</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
   <style>
     :root {
       --bg: #f2ede5;
-      --card: #ffffff;
+      --panel: #ffffff;
       --accent: #b8a98f;
       --dark: #2a2a2a;
       --muted: #777;
-      --radius: 16px;
+      --radius: 14px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -30,13 +30,12 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(242,237,229,0.9);
-      backdrop-filter: blur(10px);
-      padding: 18px 40px;
+      background: white;
+      padding: 16px 40px;
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 30px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
     }
 
     .logo {
@@ -45,39 +44,21 @@
       letter-spacing: 2px;
     }
 
-    .nav-links {
-      display: flex;
-      gap: 20px;
-    }
-
-    .nav-links a {
+    nav a {
+      margin-left: 20px;
       text-decoration: none;
       color: var(--dark);
       font-weight: 500;
     }
 
-    .admin-link {
-      margin-left: auto;
-      padding: 8px 18px;
-      border-radius: 30px;
-      background: var(--accent);
-      color: white;
-      text-decoration: none;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .admin-link:hover { opacity: 0.85; }
-
     /* HERO */
     .hero {
       text-align: center;
-      padding: 70px 20px 40px;
+      padding: 60px 20px 40px;
     }
 
     .hero h1 {
-      font-size: 3rem;
+      font-size: 2.5rem;
       margin-bottom: 10px;
     }
 
@@ -92,38 +73,42 @@
       margin: 40px auto 80px;
       padding: 0 20px;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 30px;
     }
 
     .card {
-      background: var(--card);
+      background: var(--panel);
       border-radius: var(--radius);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
-      padding: 18px;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.05);
+      padding: 20px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      transition: 0.3s;
+      gap: 14px;
+      transition: transform 0.2s;
     }
 
     .card:hover {
-      transform: translateY(-6px);
+      transform: translateY(-5px);
     }
 
-    /* FULL NATURAL IMAGE SIZE */
+    /* IMAGE FULL NATURAL SIZE */
     .card img {
-      width: auto;
-      max-width: 100%;
-      height: auto;
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
       border-radius: 12px;
-      align-self: center;
+      transition: transform 0.3s ease;
       cursor: pointer;
+    }
+
+    .card img:hover {
+      transform: scale(1.08);
+    }
     }
 
     .card h3 {
       font-size: 1.1rem;
-      margin-top: 6px;
     }
 
     .card p {
@@ -132,11 +117,10 @@
     }
 
     .price {
-      font-weight: 700;
+      font-weight: 600;
       margin-top: 5px;
     }
 
-    /* BUTTONS */
     .actions {
       margin-top: auto;
       display: flex;
@@ -151,7 +135,6 @@
       text-decoration: none;
       font-weight: 600;
       transition: 0.2s;
-      cursor: pointer;
     }
 
     .buy {
@@ -164,53 +147,14 @@
       color: var(--accent);
     }
 
-    .actions a:hover { opacity: 0.85; }
-
-    /* MODAL */
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.5);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 200;
+    .actions a:hover {
+      opacity: 0.85;
     }
 
-    .modal.active { display: flex; }
-
-    .modal-box {
-      background: white;
-      width: 90%;
-      max-width: 600px;
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-    }
-
-    .modal-box img {
-      width: 100%;
-      height: auto;
-    }
-
-    .modal-content {
-      padding: 25px;
-    }
-
-    .modal-content h2 { margin-bottom: 10px; }
-
-    .modal-content p {
+    footer {
+      text-align: center;
+      padding: 30px;
       color: var(--muted);
-      margin-bottom: 15px;
-    }
-
-    .close {
-      position: absolute;
-      top: 20px;
-      right: 30px;
-      font-size: 2rem;
-      color: white;
-      cursor: pointer;
     }
   </style>
 </head>
@@ -219,43 +163,24 @@
   <!-- NAVBAR -->
   <nav>
     <div class="logo">PINFOLIO</div>
-
-    <div class="nav-links">
+    <div>
       <a href="#">Home</a>
-      <a href="#">Gallery</a>
-      <a href="#">Shop</a>
-      <a href="#">About</a>
-      <a href="#">Contact</a>
+      <a href="dashboard.html" target="_blank">Dashboard</a>
     </div>
-
-    <span class="admin-link" onclick="goAdmin()">Admin</span>
   </nav>
 
   <!-- HERO -->
-  <div class="hero">
+  <section class="hero">
     <h1>Your Style. Your Links. Your Store.</h1>
-    <p>Curated finds directly from my Pinterest boards</p>
-  </div>
+    <p>All my Pinterest finds – curated and shoppable</p>
+  </section>
 
   <!-- PRODUCT GRID -->
   <div class="grid" id="productGrid"></div>
 
-  <!-- MODAL -->
-  <div class="modal" id="modal">
-    <div class="close" onclick="closeModal()">×</div>
-    <div class="modal-box">
-      <img id="modalImg" />
-      <div class="modal-content">
-        <h2 id="modalTitle"></h2>
-        <p id="modalDesc"></p>
-        <div class="price" id="modalPrice"></div>
-        <div class="actions">
-          <a class="buy" id="modalBuy">Buy Now</a>
-          <a class="open" id="modalOpen">Open Link</a>
-        </div>
-      </div>
-    </div>
-  </div>
+  <footer>
+    © 2026 Pinfolio • Built with ❤️
+  </footer>
 
   <script>
     const PRODUCT_KEY = "pinfolio_products";
@@ -266,26 +191,26 @@
 
     const grid = document.getElementById("productGrid");
 
-    function renderProducts() {
+    function render() {
       grid.innerHTML = "";
 
       if (products.length === 0) {
-        grid.innerHTML = "<p style='grid-column:1/-1;text-align:center;'>No products yet. Add from dashboard 🔥</p>";
+        grid.innerHTML = "<p style='text-align:center;color:#777'>No products added yet.</p>";
         return;
       }
 
-      products.forEach((p, i) => {
+      products.forEach(p => {
         const card = document.createElement("div");
         card.className = "card";
 
         card.innerHTML = `
-          <img src="${p.image}" onclick="openModal(${i})">
+          <img src="${p.image}" alt="${p.title}">
           <h3>${p.title}</h3>
           <p>${p.desc || ""}</p>
-          ${p.price ? `<div class="price">${p.price}</div>` : ""}
+          ${p.price ? `<div class='price'>${p.price}</div>` : ""}
           <div class="actions">
-            <a class="buy" onclick="buyNow('${p.title}','${p.link}')">Buy Now</a>
-            <a class="open" onclick="buyNow('${p.title}','${p.link}')">Open Link</a>
+            <a class="buy" href="${p.link}" target="_blank" onclick="trackClick('${p.title}')">Buy Now</a>
+            <a class="open" href="${p.link}" target="_blank" onclick="trackClick('${p.title}')">Open Link</a>
           </div>
         `;
 
@@ -293,40 +218,12 @@
       });
     }
 
-    function buyNow(title, link) {
+    function trackClick(title) {
       clicks[title] = (clicks[title] || 0) + 1;
       localStorage.setItem(CLICK_KEY, JSON.stringify(clicks));
-      window.open(link, "_blank");
     }
 
-    function openModal(i) {
-      const p = products[i];
-
-      document.getElementById("modalImg").src = p.image;
-      document.getElementById("modalTitle").innerText = p.title;
-      document.getElementById("modalDesc").innerText = p.desc || "";
-      document.getElementById("modalPrice").innerText = p.price || "";
-
-      document.getElementById("modalBuy").onclick = () => buyNow(p.title, p.link);
-      document.getElementById("modalOpen").onclick = () => buyNow(p.title, p.link);
-
-      document.getElementById("modal").classList.add("active");
-    }
-
-    function closeModal() {
-      document.getElementById("modal").classList.remove("active");
-    }
-
-    function goAdmin() {
-      const pass = prompt("Enter Admin Password:");
-      if (pass === "admin123") {
-        window.location.href = "dashboard.html";
-      } else {
-        alert("Wrong password 😈");
-      }
-    }
-
-    renderProducts();
+    render();
   </script>
 </body>
 </html>
