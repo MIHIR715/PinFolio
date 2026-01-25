@@ -56,7 +56,6 @@
       font-weight: 500;
     }
 
-    /* ADMIN BUTTON */
     .admin-link {
       margin-left: auto;
       padding: 8px 18px;
@@ -69,9 +68,7 @@
       transition: 0.2s;
     }
 
-    .admin-link:hover {
-      opacity: 0.85;
-    }
+    .admin-link:hover { opacity: 0.85; }
 
     /* HERO */
     .hero {
@@ -92,19 +89,21 @@
     /* GRID */
     .grid {
       max-width: 1200px;
-      margin: 40px auto;
+      margin: 40px auto 80px;
       padding: 0 20px;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 25px;
+      gap: 30px;
     }
 
     .card {
       background: var(--card);
       border-radius: var(--radius);
       box-shadow: 0 10px 30px rgba(0,0,0,0.06);
-      overflow: hidden;
-      cursor: pointer;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
       transition: 0.3s;
     }
 
@@ -112,25 +111,60 @@
       transform: translateY(-6px);
     }
 
+    /* FULL NATURAL IMAGE SIZE */
     .card img {
-      width: 100%;
-      height: 220px;
-      object-fit: cover;
-    }
-
-    .card .info {
-      padding: 16px;
+      width: auto;
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      align-self: center;
+      cursor: pointer;
     }
 
     .card h3 {
       font-size: 1.1rem;
-      margin-bottom: 6px;
+      margin-top: 6px;
     }
 
     .card p {
       font-size: 0.9rem;
       color: var(--muted);
     }
+
+    .price {
+      font-weight: 700;
+      margin-top: 5px;
+    }
+
+    /* BUTTONS */
+    .actions {
+      margin-top: auto;
+      display: flex;
+      gap: 12px;
+    }
+
+    .actions a {
+      flex: 1;
+      text-align: center;
+      padding: 12px 0;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: 0.2s;
+      cursor: pointer;
+    }
+
+    .buy {
+      background: var(--accent);
+      color: white;
+    }
+
+    .open {
+      border: 2px solid var(--accent);
+      color: var(--accent);
+    }
+
+    .actions a:hover { opacity: 0.85; }
 
     /* MODAL */
     .modal {
@@ -143,9 +177,7 @@
       z-index: 200;
     }
 
-    .modal.active {
-      display: flex;
-    }
+    .modal.active { display: flex; }
 
     .modal-box {
       background: white;
@@ -158,37 +190,18 @@
 
     .modal-box img {
       width: 100%;
-      height: 300px;
-      object-fit: cover;
+      height: auto;
     }
 
     .modal-content {
       padding: 25px;
     }
 
-    .modal-content h2 {
-      margin-bottom: 10px;
-    }
+    .modal-content h2 { margin-bottom: 10px; }
 
     .modal-content p {
       color: var(--muted);
       margin-bottom: 15px;
-    }
-
-    .price {
-      font-size: 1.2rem;
-      font-weight: 700;
-      margin-bottom: 20px;
-    }
-
-    .buy-btn {
-      padding: 12px 30px;
-      background: var(--accent);
-      border: none;
-      border-radius: 30px;
-      color: white;
-      font-size: 1rem;
-      cursor: pointer;
     }
 
     .close {
@@ -215,7 +228,6 @@
       <a href="#">Contact</a>
     </div>
 
-    <!-- ADMIN BUTTON (GO TO DASHBOARD) -->
     <span class="admin-link" onclick="goAdmin()">Admin</span>
   </nav>
 
@@ -237,16 +249,15 @@
         <h2 id="modalTitle"></h2>
         <p id="modalDesc"></p>
         <div class="price" id="modalPrice"></div>
-        <button class="buy-btn" id="modalLink">Buy Now</button>
+        <div class="actions">
+          <a class="buy" id="modalBuy">Buy Now</a>
+          <a class="open" id="modalOpen">Open Link</a>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
-    /* =============================
-       CONNECT TO DASHBOARD STORAGE
-    ==============================*/
-
     const PRODUCT_KEY = "pinfolio_products";
     const CLICK_KEY = "pinfolio_clicks";
 
@@ -266,19 +277,28 @@
       products.forEach((p, i) => {
         const card = document.createElement("div");
         card.className = "card";
+
         card.innerHTML = `
-          <img src="${p.image}" />
-          <div class="info">
-            <h3>${p.title}</h3>
-            <p>${p.desc || ""}</p>
+          <img src="${p.image}" onclick="openModal(${i})">
+          <h3>${p.title}</h3>
+          <p>${p.desc || ""}</p>
+          ${p.price ? `<div class="price">${p.price}</div>` : ""}
+          <div class="actions">
+            <a class="buy" onclick="buyNow('${p.title}','${p.link}')">Buy Now</a>
+            <a class="open" onclick="buyNow('${p.title}','${p.link}')">Open Link</a>
           </div>
         `;
-        card.onclick = () => openModal(i);
+
         grid.appendChild(card);
       });
     }
 
-    /* MODAL OPEN */
+    function buyNow(title, link) {
+      clicks[title] = (clicks[title] || 0) + 1;
+      localStorage.setItem(CLICK_KEY, JSON.stringify(clicks));
+      window.open(link, "_blank");
+    }
+
     function openModal(i) {
       const p = products[i];
 
@@ -287,11 +307,8 @@
       document.getElementById("modalDesc").innerText = p.desc || "";
       document.getElementById("modalPrice").innerText = p.price || "";
 
-      document.getElementById("modalLink").onclick = () => {
-        clicks[p.title] = (clicks[p.title] || 0) + 1;
-        localStorage.setItem(CLICK_KEY, JSON.stringify(clicks));
-        window.open(p.link, "_blank");
-      };
+      document.getElementById("modalBuy").onclick = () => buyNow(p.title, p.link);
+      document.getElementById("modalOpen").onclick = () => buyNow(p.title, p.link);
 
       document.getElementById("modal").classList.add("active");
     }
@@ -300,7 +317,6 @@
       document.getElementById("modal").classList.remove("active");
     }
 
-    /* ADMIN BUTTON FUNCTION */
     function goAdmin() {
       const pass = prompt("Enter Admin Password:");
       if (pass === "admin123") {
