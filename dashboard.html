@@ -164,6 +164,18 @@
       cursor: pointer;
     }
 
+    /* IMAGE PREVIEW */
+    .preview {
+      grid-column: span 2;
+      text-align: center;
+    }
+
+    .preview img {
+      max-width: 200px;
+      border-radius: 12px;
+      margin-top: 10px;
+    }
+
     /* TABLE */
     table { width: 100%; border-collapse: collapse; }
 
@@ -194,28 +206,6 @@
     .delete { background: #ff6b6b; }
     .edit { background: #4dabf7; }
 
-    /* SIMPLE BAR CHART */
-    .chart {
-      display: flex;
-      gap: 10px;
-      align-items: flex-end;
-      height: 150px;
-      margin-top: 20px;
-    }
-
-    .bar {
-      flex: 1;
-      background: var(--accent);
-      border-radius: 6px 6px 0 0;
-      text-align: center;
-      color: white;
-      font-size: 0.7rem;
-    }
-
-    @media(max-width: 900px) {
-      .app { flex-direction: column; }
-      .sidebar { width: 100%; flex-direction: row; overflow-x: auto; }
-    }
   </style>
 </head>
 <body>
@@ -226,7 +216,6 @@
       <h2>Admin Login</h2>
       <input type="password" id="loginPass" placeholder="Enter Password" />
       <button onclick="login()">Login</button>
-      <p style="margin-top:10px;color:#999;font-size:0.8rem;">Default password: admin123</p>
     </div>
   </div>
 
@@ -269,9 +258,16 @@
         <form class="form" id="productForm">
           <input type="text" id="title" placeholder="Product Title" required />
           <input type="text" id="price" placeholder="Price (optional)" />
-          <input type="text" id="image" placeholder="Image URL" required />
+
+          <!-- IMAGE UPLOAD FIELD -->
+          <input type="file" id="imageFile" accept="image/*" required />
+
           <input type="text" id="link" placeholder="E-commerce Link" required />
           <textarea id="desc" placeholder="Product Description"></textarea>
+
+          <!-- IMAGE PREVIEW -->
+          <div class="preview"><img id="previewImg" /></div>
+
           <button type="submit">Save Product</button>
         </form>
       </div>
@@ -293,20 +289,11 @@
         </table>
       </div>
 
-      <!-- ANALYTICS CHART -->
-      <div class="panel">
-        <h2>Clicks Chart</h2>
-        <div class="chart" id="chart"></div>
-      </div>
-
     </div>
   </div>
 
 <script>
-  /* =============================
-     LOGIN SYSTEM
-  ==============================*/
-
+  /* LOGIN */
   function login() {
     const pass = document.getElementById("loginPass").value;
     if (pass === "admin123") {
@@ -318,10 +305,7 @@
     }
   }
 
-  /* =============================
-     STORAGE (SHARED WITH MAIN SITE)
-  ==============================*/
-
+  /* STORAGE */
   const PRODUCT_KEY = "pinfolio_products";
   const CLICK_KEY = "pinfolio_clicks";
 
@@ -332,9 +316,22 @@
   const totalProducts = document.getElementById("totalProducts");
   const totalClicks = document.getElementById("totalClicks");
   const topProduct = document.getElementById("topProduct");
-  const chart = document.getElementById("chart");
 
   let editIndex = null;
+  let uploadedImage = null;
+
+  /* IMAGE PREVIEW HANDLER */
+  document.getElementById("imageFile").addEventListener("change", function(e) {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function() {
+      uploadedImage = reader.result;
+      document.getElementById("previewImg").src = uploadedImage;
+    };
+
+    if (file) reader.readAsDataURL(file);
+  });
 
   function save() {
     localStorage.setItem(PRODUCT_KEY, JSON.stringify(products));
@@ -344,7 +341,6 @@
 
   function render() {
     table.innerHTML = "";
-    chart.innerHTML = "";
 
     let clickSum = 0;
     let maxClicks = 0;
@@ -367,12 +363,6 @@
         </td>
       `;
       table.appendChild(row);
-
-      const bar = document.createElement("div");
-      bar.className = "bar";
-      bar.style.height = Math.max(c * 10, 10) + "px";
-      bar.innerText = c;
-      chart.appendChild(bar);
     });
 
     totalProducts.innerText = products.length;
@@ -384,10 +374,15 @@
   document.getElementById("productForm").addEventListener("submit", e => {
     e.preventDefault();
 
+    if (!uploadedImage) {
+      alert("Please upload an image");
+      return;
+    }
+
     const newProduct = {
       title: title.value,
       price: price.value,
-      image: image.value,
+      image: uploadedImage,
       desc: desc.value,
       link: link.value
     };
@@ -398,6 +393,9 @@
     } else {
       products.push(newProduct);
     }
+
+    uploadedImage = null;
+    document.getElementById("previewImg").src = "";
 
     save();
     e.target.reset();
@@ -412,9 +410,10 @@
     const p = products[i];
     title.value = p.title;
     price.value = p.price;
-    image.value = p.image;
     desc.value = p.desc;
     link.value = p.link;
+    uploadedImage = p.image;
+    document.getElementById("previewImg").src = p.image;
     editIndex = i;
   }
 
