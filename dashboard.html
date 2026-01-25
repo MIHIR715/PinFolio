@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PINFOLIO – Admin Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #f2ede5;
+      --panel: #ffffff;
+      --accent: #b8a98f;
+      --dark: #2a2a2a;
+      --muted: #777;
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--dark);
+      min-height: 100vh;
+    }
+
+    /* LOGIN SCREEN */
+    .login {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-box {
+      background: var(--panel);
+      padding: 40px;
+      border-radius: 20px;
+      width: 320px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .login-box h2 { margin-bottom: 20px; }
+
+    .login-box input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      outline: none;
+    }
+
+    .login-box button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 30px;
+      background: var(--accent);
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    /* DASHBOARD LAYOUT */
+    .app { display: none; min-height: 100vh; display: flex; }
+
+    .sidebar {
+      width: 240px;
+      background: #e6ddcf;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .logo {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+
+    .menu a {
+      display: block;
+      padding: 12px 14px;
+      border-radius: 10px;
+      text-decoration: none;
+      color: var(--dark);
+      margin-bottom: 8px;
+      cursor: pointer;
+    }
+
+    .menu a.active, .menu a:hover {
+      background: white;
+      font-weight: 600;
+    }
+
+    .main {
+      flex: 1;
+      padding: 30px 40px;
+    }
+
+    h1 { margin-bottom: 20px; }
+
+    /* STATS */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .stat {
+      background: var(--panel);
+      padding: 20px;
+      border-radius: var(--radius);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    }
+
+    .stat h3 { color: var(--muted); font-size: 0.9rem; }
+    .stat p { font-size: 1.8rem; font-weight: 700; margin-top: 8px; }
+
+    /* FORM PANEL */
+    .panel {
+      background: var(--panel);
+      padding: 25px;
+      border-radius: var(--radius);
+      box-shadow: 0 5px 25px rgba(0,0,0,0.05);
+      margin-bottom: 40px;
+    }
+
+    .panel h2 { margin-bottom: 20px; }
+
+    .form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .form input, .form textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      outline: none;
+    }
+
+    .form textarea {
+      grid-column: span 2;
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .form button {
+      grid-column: span 2;
+      padding: 14px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    /* TABLE */
+    table { width: 100%; border-collapse: collapse; }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+      font-size: 0.9rem;
+    }
+
+    th { color: var(--muted); }
+
+    img.thumb {
+      width: 60px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .actions button {
+      padding: 6px 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-right: 6px;
+      color: white;
+    }
+
+    .delete { background: #ff6b6b; }
+    .edit { background: #4dabf7; }
+
+    /* SIMPLE BAR CHART */
+    .chart {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      height: 150px;
+      margin-top: 20px;
+    }
+
+    .bar {
+      flex: 1;
+      background: var(--accent);
+      border-radius: 6px 6px 0 0;
+      text-align: center;
+      color: white;
+      font-size: 0.7rem;
+    }
+
+    @media(max-width: 900px) {
+      .app { flex-direction: column; }
+      .sidebar { width: 100%; flex-direction: row; overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LOGIN SCREEN -->
+  <div class="login" id="loginScreen">
+    <div class="login-box">
+      <h2>Admin Login</h2>
+      <input type="password" id="loginPass" placeholder="Enter Password" />
+      <button onclick="login()">Login</button>
+      <p style="margin-top:10px;color:#999;font-size:0.8rem;">Default password: admin123</p>
+    </div>
+  </div>
+
+  <!-- DASHBOARD APP -->
+  <div class="app" id="app">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="logo">PINFOLIO</div>
+      <div class="menu">
+        <a class="active">Dashboard</a>
+        <a>Products</a>
+        <a>Analytics</a>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+      <h1>Admin Dashboard</h1>
+
+      <!-- STATS -->
+      <div class="stats">
+        <div class="stat">
+          <h3>Total Products</h3>
+          <p id="totalProducts">0</p>
+        </div>
+        <div class="stat">
+          <h3>Total Clicks</h3>
+          <p id="totalClicks">0</p>
+        </div>
+        <div class="stat">
+          <h3>Top Product</h3>
+          <p id="topProduct">—</p>
+        </div>
+      </div>
+
+      <!-- ADD PRODUCT -->
+      <div class="panel">
+        <h2>Add / Edit Product</h2>
+        <form class="form" id="productForm">
+          <input type="text" id="title" placeholder="Product Title" required />
+          <input type="text" id="price" placeholder="Price (optional)" />
+          <input type="text" id="image" placeholder="Image URL" required />
+          <input type="text" id="link" placeholder="E-commerce Link" required />
+          <textarea id="desc" placeholder="Product Description"></textarea>
+          <button type="submit">Save Product</button>
+        </form>
+      </div>
+
+      <!-- PRODUCT LIST -->
+      <div class="panel">
+        <h2>Your Products</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Title</th>
+              <th>Price</th>
+              <th>Clicks</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="productTable"></tbody>
+        </table>
+      </div>
+
+      <!-- ANALYTICS CHART -->
+      <div class="panel">
+        <h2>Clicks Chart</h2>
+        <div class="chart" id="chart"></div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  /* =============================
+     LOGIN SYSTEM
+  ==============================*/
+
+  function login() {
+    const pass = document.getElementById("loginPass").value;
+    if (pass === "admin123") {
+      document.getElementById("loginScreen").style.display = "none";
+      document.getElementById("app").style.display = "flex";
+      render();
+    } else {
+      alert("Wrong password 😈");
+    }
+  }
+
+  /* =============================
+     STORAGE (SHARED WITH MAIN SITE)
+  ==============================*/
+
+  const PRODUCT_KEY = "pinfolio_products";
+  const CLICK_KEY = "pinfolio_clicks";
+
+  let products = JSON.parse(localStorage.getItem(PRODUCT_KEY)) || [];
+  let clicks = JSON.parse(localStorage.getItem(CLICK_KEY)) || {};
+
+  const table = document.getElementById("productTable");
+  const totalProducts = document.getElementById("totalProducts");
+  const totalClicks = document.getElementById("totalClicks");
+  const topProduct = document.getElementById("topProduct");
+  const chart = document.getElementById("chart");
+
+  let editIndex = null;
+
+  function save() {
+    localStorage.setItem(PRODUCT_KEY, JSON.stringify(products));
+    localStorage.setItem(CLICK_KEY, JSON.stringify(clicks));
+    render();
+  }
+
+  function render() {
+    table.innerHTML = "";
+    chart.innerHTML = "";
+
+    let clickSum = 0;
+    let maxClicks = 0;
+    let best = "—";
+
+    products.forEach((p, i) => {
+      const c = clicks[p.title] || 0;
+      clickSum += c;
+      if (c > maxClicks) { maxClicks = c; best = p.title; }
+
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td><img class="thumb" src="${p.image}" /></td>
+        <td>${p.title}</td>
+        <td>${p.price || "—"}</td>
+        <td>${c}</td>
+        <td class="actions">
+          <button class="edit" onclick="editProduct(${i})">Edit</button>
+          <button class="delete" onclick="deleteProduct(${i})">Delete</button>
+        </td>
+      `;
+      table.appendChild(row);
+
+      const bar = document.createElement("div");
+      bar.className = "bar";
+      bar.style.height = Math.max(c * 10, 10) + "px";
+      bar.innerText = c;
+      chart.appendChild(bar);
+    });
+
+    totalProducts.innerText = products.length;
+    totalClicks.innerText = clickSum;
+    topProduct.innerText = best;
+  }
+
+  /* ADD / EDIT PRODUCT */
+  document.getElementById("productForm").addEventListener("submit", e => {
+    e.preventDefault();
+
+    const newProduct = {
+      title: title.value,
+      price: price.value,
+      image: image.value,
+      desc: desc.value,
+      link: link.value
+    };
+
+    if (editIndex !== null) {
+      products[editIndex] = newProduct;
+      editIndex = null;
+    } else {
+      products.push(newProduct);
+    }
+
+    save();
+    e.target.reset();
+  });
+
+  function deleteProduct(i) {
+    products.splice(i, 1);
+    save();
+  }
+
+  function editProduct(i) {
+    const p = products[i];
+    title.value = p.title;
+    price.value = p.price;
+    image.value = p.image;
+    desc.value = p.desc;
+    link.value = p.link;
+    editIndex = i;
+  }
+
+</script>
+</body>
+</html>
