@@ -1,215 +1,217 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pinfolio – Your Style. Your Links. Your Store.</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pinfolio – Your Style. Your Links. Your Store.</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f2ede5;
+  --panel: #ffffff;
+  --accent: #b8a98f;
+  --dark: #2a2a2a;
+  --muted: #777;
+  --radius: 16px;
+}
 
-  <style>
-    :root {
-      --bg: #f2ede5;
-      --panel: #ffffff;
-      --accent: #b8a98f;
-      --dark: #2a2a2a;
-      --muted: #777;
-      --radius: 14px;
-    }
+* { box-sizing: border-box; margin:0; padding:0; }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg);
+  color: var(--dark);
+  min-height: 100vh;
+}
 
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: var(--bg);
-      color: var(--dark);
-      min-height: 100vh;
-    }
+nav {
+  position: sticky;
+  top:0;
+  z-index:100;
+  background:white;
+  padding:16px 40px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+}
 
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: white;
-      padding: 16px 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-    }
+.logo { font-size:1.6rem; font-weight:700; letter-spacing:2px; }
+nav a { margin-left:20px; text-decoration:none; color:var(--dark); font-weight:500; }
 
-    .logo { font-size: 1.6rem; font-weight: 700; letter-spacing: 2px; }
-    nav a { margin-left: 20px; text-decoration: none; color: var(--dark); font-weight: 500; }
+.hero { text-align:center; padding:60px 20px 40px; }
+.hero h1 { font-size:2.5rem; margin-bottom:10px; }
+.hero p { color:var(--muted); font-size:1.1rem; }
 
-    .hero { text-align: center; padding: 60px 20px 40px; }
-    .hero h1 { font-size: 2.5rem; margin-bottom: 10px; }
-    .hero p { color: var(--muted); font-size: 1.1rem; }
+.grid {
+  max-width: 1200px;
+  margin:40px auto 80px;
+  padding:0 20px;
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
 
-    .grid {
-      max-width: 1200px;
-      margin: 40px auto 80px;
-      padding: 0 20px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 30px;
-    }
+@media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
 
-    .card {
-      background: var(--panel);
-      border-radius: var(--radius);
-      box-shadow: 0 5px 25px rgba(0,0,0,0.05);
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
+/* RECTANGULAR CARD */
+.card {
+  background: var(--panel);
+  border-radius: var(--radius);
+  box-shadow: 0 5px 25px rgba(0,0,0,0.05);
+  display:flex;
+  flex-direction:column;
+  cursor:pointer;
+  overflow:hidden; /* round corners for images */
+  transition: transform 0.2s;
+}
 
-    .card:hover { transform: translateY(-5px); }
+.card:hover { transform: translateY(-5px); }
 
-    .card img {
-      width: 100%;
-      height: 220px;
-      object-fit: cover;
-      border-radius: 12px;
-      transition: transform 0.3s ease;
-    }
+.card img {
+  width:100%;
+  height:250px; /* rectangular */
+  object-fit: contain; /* show full image without cropping */
+  border-bottom: 1px solid #eee;
+}
 
-    .card h3 { font-size: 1.2rem; text-align: center; }
-    .card p { display: none; } /* hide description in grid */
+.card h3 {
+  font-size:1.1rem;
+  text-align:center;
+  padding:12px;
+  background: #fafafa;
+}
 
-    /* MODAL */
-    .modal {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.6);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-    }
+/* MODAL */
+.modal {
+  position: fixed;
+  top:0; left:0; right:0; bottom:0;
+  background: rgba(0,0,0,0.6);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
 
-    .modal-content {
-      background: white;
-      border-radius: var(--radius);
-      max-width: 500px;
-      width: 90%;
-      padding: 20px;
-      text-align: center;
-      position: relative;
-    }
+.modal-content {
+  background:white;
+  border-radius: var(--radius);
+  max-width:500px;
+  width:90%;
+  padding:20px;
+  text-align:center;
+  position:relative;
+}
 
-    .modal-content img {
-      width: 100%;
-      height: auto;
-      border-radius: 12px;
-      margin-bottom: 15px;
-    }
+.modal-content img {
+  width:100%;
+  height:auto;
+  border-radius:12px;
+  margin-bottom:15px;
+}
 
-    .modal-content h3 { margin-bottom: 10px; }
-    .modal-content p { margin-bottom: 15px; color: var(--muted); }
-    .modal-content a {
-      display: inline-block;
-      padding: 12px 25px;
-      background: var(--accent);
-      color: white;
-      border-radius: 30px;
-      text-decoration: none;
-      font-weight: 600;
-    }
+.modal-content h3 { margin-bottom:10px; }
+.modal-content p { margin-bottom:15px; color:var(--muted); }
+.modal-content a {
+  display:inline-block;
+  padding:12px 25px;
+  background:var(--accent);
+  color:white;
+  border-radius:30px;
+  text-decoration:none;
+  font-weight:600;
+}
 
-    .modal-close {
-      position: absolute;
-      top: 10px; right: 15px;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: var(--dark);
-    }
+.modal-close {
+  position:absolute;
+  top:10px; right:15px;
+  font-size:1.5rem;
+  cursor:pointer;
+  color:var(--dark);
+}
 
-    footer { text-align: center; padding: 30px; color: var(--muted); }
-  </style>
+footer { text-align:center; padding:30px; color:var(--muted); }
+</style>
 </head>
 <body>
 
-  <nav>
-    <div class="logo">PINFOLIO</div>
-    <div>
-      <a href="#">Home</a>
-      <a href="dashboard.html" target="_blank">Dashboard</a>
-    </div>
-  </nav>
-
-  <section class="hero">
-    <h1>Your Style. Your Links. Your Store.</h1>
-    <p>All my Pinterest finds – curated and shoppable</p>
-  </section>
-
-  <div class="grid" id="productGrid"></div>
-
-  <!-- MODAL -->
-  <div class="modal" id="modal">
-    <div class="modal-content">
-      <span class="modal-close" id="modalClose">&times;</span>
-      <img id="modalImg" src="" alt="">
-      <h3 id="modalTitle"></h3>
-      <p id="modalDesc"></p>
-      <a id="modalLink" href="#" target="_blank">Open Link</a>
-    </div>
+<nav>
+  <div class="logo">PINFOLIO</div>
+  <div>
+    <a href="#">Home</a>
+    <a href="dashboard.html" target="_blank">Dashboard</a>
   </div>
+</nav>
 
-  <footer>
-    © 2026 Pinfolio • Built with ❤️
-  </footer>
+<section class="hero">
+  <h1>Your Style. Your Links. Your Store.</h1>
+  <p>All my Pinterest finds – curated and shoppable</p>
+</section>
 
-  <script>
-    const PRODUCT_KEY = "pinfolio_products";
-    let products = JSON.parse(localStorage.getItem(PRODUCT_KEY)) || [];
+<div class="grid" id="productGrid"></div>
 
-    const grid = document.getElementById("productGrid");
-    const modal = document.getElementById("modal");
-    const modalImg = document.getElementById("modalImg");
-    const modalTitle = document.getElementById("modalTitle");
-    const modalDesc = document.getElementById("modalDesc");
-    const modalLink = document.getElementById("modalLink");
-    const modalClose = document.getElementById("modalClose");
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <span class="modal-close" id="modalClose">&times;</span>
+    <img id="modalImg" src="" alt="">
+    <h3 id="modalTitle"></h3>
+    <p id="modalDesc"></p>
+    <a id="modalLink" href="#" target="_blank">Open Link</a>
+  </div>
+</div>
 
-    function render() {
-      grid.innerHTML = "";
-      if (products.length === 0) {
-        grid.innerHTML = "<p style='text-align:center;color:#777'>No products added yet.</p>";
-        return;
-      }
+<footer>© 2026 Pinfolio • Built with ❤️</footer>
 
-      products.forEach((p, index) => {
-        const card = document.createElement("div");
-        card.className = "card";
+<script>
+const PRODUCT_KEY = "pinfolio_products";
+let products = JSON.parse(localStorage.getItem(PRODUCT_KEY)) || [];
 
-        card.innerHTML = `
-          <img src="${p.image}" alt="${p.title}">
-          <h3>${p.title}</h3>
-        `;
+// Sample product if empty
+if(products.length === 0){
+  products = [{
+    title: "Motivation Collage 2026",
+    desc: "Self-care, discipline, positive vibes, and consistency. Perfect vision board style collage for inspiration.",
+    image: "/mnt/data/0ab0b22d-507a-4da6-b9c3-ed3aa58dffe0.png",
+    link: "#"
+  }];
+  localStorage.setItem(PRODUCT_KEY, JSON.stringify(products));
+}
 
-        card.addEventListener("click", () => {
-          modalImg.src = p.image;
-          modalTitle.textContent = p.title;
-          modalDesc.textContent = p.desc || "No description available.";
-          modalLink.href = p.link || "#";
-          modal.style.display = "flex";
-        });
+const grid = document.getElementById("productGrid");
+const modal = document.getElementById("modal");
+const modalImg = document.getElementById("modalImg");
+const modalTitle = document.getElementById("modalTitle");
+const modalDesc = document.getElementById("modalDesc");
+const modalLink = document.getElementById("modalLink");
+const modalClose = document.getElementById("modalClose");
 
-        grid.appendChild(card);
-      });
-    }
-
-    modalClose.addEventListener("click", () => {
-      modal.style.display = "none";
+function render(){
+  grid.innerHTML = "";
+  products.forEach(p=>{
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <img src="${p.image}" alt="${p.title}">
+      <h3>${p.title}</h3>
+    `;
+    card.addEventListener("click", ()=>{
+      modalImg.src = p.image;
+      modalTitle.textContent = p.title;
+      modalDesc.textContent = p.desc;
+      modalLink.href = p.link;
+      modal.style.display = "flex";
     });
+    grid.appendChild(card);
+  });
+}
 
-    window.addEventListener("click", (e) => {
-      if (e.target === modal) modal.style.display = "none";
-    });
+modalClose.addEventListener("click", ()=> modal.style.display="none");
+window.addEventListener("click",(e)=> {if(e.target===modal) modal.style.display="none"; });
 
-    render();
-  </script>
+render();
+</script>
+
 </body>
 </html>
