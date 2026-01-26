@@ -1,432 +1,262 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PINFOLIO – Admin Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
-    :root {
-      --bg: #f2ede5;
-      --panel: #ffffff;
-      --accent: #b8a98f;
-      --dark: #2a2a2a;
-      --muted: #777;
-      --radius: 14px;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
-      font-family: 'Poppins', sans-serif;
-      background: var(--bg);
-      color: var(--dark);
-      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
     }
 
-    /* LOGIN SCREEN */
-    .login {
-      min-height: 100vh;
+    header {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
-    }
-
-    .login-box {
-      background: var(--panel);
-      padding: 40px;
-      border-radius: 20px;
-      width: 320px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-      text-align: center;
-    }
-
-    .login-box h2 { margin-bottom: 20px; }
-
-    .login-box input {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
-      border-radius: 10px;
-      border: 1px solid #ddd;
-      outline: none;
-    }
-
-    .login-box button {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 30px;
-      background: var(--accent);
+      background: #222;
       color: white;
-      font-size: 1rem;
-      cursor: pointer;
+      padding: 10px 20px;
     }
 
-    /* DASHBOARD LAYOUT */
-    .app { display: none; min-height: 100vh; display: flex; }
-
-    .sidebar {
-      width: 240px;
-      background: #e6ddcf;
-      padding: 30px 20px;
+    nav {
+      background: #333;
       display: flex;
-      flex-direction: column;
       gap: 20px;
+      padding: 10px 20px;
     }
 
-    .logo {
-      font-size: 1.6rem;
-      font-weight: 700;
-      letter-spacing: 2px;
-    }
-
-    .menu a {
-      display: block;
-      padding: 12px 14px;
-      border-radius: 10px;
+    nav a {
+      color: white;
       text-decoration: none;
-      color: var(--dark);
-      margin-bottom: 8px;
       cursor: pointer;
+      font-weight: bold;
     }
 
-    .menu a.active, .menu a:hover {
-      background: white;
-      font-weight: 600;
+    nav a.active {
+      color: #ff6a00;
     }
 
-    .main {
-      flex: 1;
-      padding: 30px 40px;
-    }
-
-    h1 { margin-bottom: 20px; }
-
-    /* STATS */
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-      margin-bottom: 30px;
-    }
-
-    .stat {
-      background: var(--panel);
+    .container {
       padding: 20px;
-      border-radius: var(--radius);
-      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
     }
 
-    .stat h3 { color: var(--muted); font-size: 0.9rem; }
-    .stat p { font-size: 1.8rem; font-weight: 700; margin-top: 8px; }
-
-    /* FORM PANEL */
-    .panel {
-      background: var(--panel);
-      padding: 25px;
-      border-radius: var(--radius);
-      box-shadow: 0 5px 25px rgba(0,0,0,0.05);
-      margin-bottom: 40px;
+    button {
+      padding: 8px 15px;
+      border: none;
+      background: #ff6a00;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
     }
 
-    .panel h2 { margin-bottom: 20px; }
-
-    .form {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-    }
-
-    .form input, .form textarea {
+    input, textarea {
       width: 100%;
-      padding: 12px 14px;
+      padding: 8px;
+      margin: 8px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 15px;
       border-radius: 10px;
-      border: 1px solid #ddd;
-      outline: none;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
 
-    .form textarea {
-      grid-column: span 2;
-      resize: vertical;
-      min-height: 80px;
+    .card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 5px;
     }
 
-    .form button {
-      grid-column: span 2;
-      padding: 14px;
-      background: var(--accent);
-      color: white;
-      border: none;
-      border-radius: 30px;
-      font-size: 1rem;
-      cursor: pointer;
+    .hidden { display: none; }
+
+    .stats {
+      display: flex;
+      gap: 20px;
+      margin-top: 20px;
     }
 
-    /* IMAGE PREVIEW */
-    .preview {
-      grid-column: span 2;
+    .stat-box {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      flex: 1;
       text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-
-    .preview img {
-      max-width: 250px;
-      max-height: 250px;
-      object-fit: contain;
-      border-radius: 12px;
-      margin-top: 10px;
-      background: #f7f7f7;
-      padding: 10px;
-    }
-
-    /* TABLE */
-    table { width: 100%; border-collapse: collapse; }
-
-    th, td {
-      padding: 12px;
-      border-bottom: 1px solid #eee;
-      font-size: 0.9rem;
-    }
-
-    th { color: var(--muted); }
-
-    img.thumb {
-      width: 60px;
-      height: 50px;
-      object-fit: contain;
-      background: #f7f7f7;
-      border-radius: 8px;
-    }
-
-    .actions button {
-      padding: 6px 10px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-right: 6px;
-      color: white;
-    }
-
-    .delete { background: #ff6b6b; }
-    .edit { background: #4dabf7; }
-
   </style>
 </head>
+
 <body>
 
-<!-- LOGIN SCREEN -->
-<div class="login" id="loginScreen">
-  <div class="login-box">
-    <h2>Admin Login</h2>
-    <input type="password" id="loginPass" placeholder="Enter Password" />
-    <button onclick="login()">Login</button>
-  </div>
-</div>
+<header>
+  <h2>Admin Dashboard</h2>
+  <button onclick="logout()">Logout</button>
+</header>
 
-<!-- DASHBOARD -->
-<div class="app" id="app">
+<nav>
+  <a id="tabProducts" class="active" onclick="showPage('productsPage')">Products</a>
+  <a id="tabAdd" onclick="showPage('addPage')">Add Product</a>
+  <a id="tabAnalytics" onclick="showPage('analyticsPage')">Analytics</a>
+</nav>
 
-  <div class="sidebar">
-    <div class="logo">PINFOLIO</div>
-    <div class="menu">
-      <a class="active">Dashboard</a>
-      <a>Products</a>
-      <a>Analytics</a>
-    </div>
+<div class="container">
+
+  <!-- PRODUCTS PAGE -->
+  <div id="productsPage">
+    <h3>All Products</h3>
+    <div class="products" id="products"></div>
   </div>
 
-  <div class="main">
-    <h1>Admin Dashboard</h1>
+  <!-- ADD PRODUCT PAGE -->
+  <div id="addPage" class="hidden">
+    <h3>Add New Product</h3>
 
-    <!-- STATS -->
+    <input type="text" id="title" placeholder="Title" />
+    <textarea id="desc" placeholder="Description"></textarea>
+    <input type="text" id="price" placeholder="Price" />
+    <input type="text" id="image" placeholder="Image URL" />
+    <input type="text" id="link" placeholder="Product Link" />
+
+    <button onclick="addProduct()">Save Product</button>
+    <p id="msg"></p>
+  </div>
+
+  <!-- ANALYTICS PAGE -->
+  <div id="analyticsPage" class="hidden">
+    <h3>Analytics</h3>
+
     <div class="stats">
-      <div class="stat"><h3>Total Products</h3><p id="totalProducts">0</p></div>
-      <div class="stat"><h3>Total Clicks</h3><p id="totalClicks">0</p></div>
-      <div class="stat"><h3>Top Product</h3><p id="topProduct">—</p></div>
+      <div class="stat-box">
+        <h2 id="totalProducts">0</h2>
+        <p>Total Products</p>
+      </div>
+
+      <div class="stat-box">
+        <h2 id="totalUsers">1</h2>
+        <p>Admin Users</p>
+      </div>
     </div>
-
-    <!-- ADD PRODUCT -->
-    <div class="panel">
-      <h2>Add / Edit Product</h2>
-      <form class="form" id="productForm">
-
-        <input type="text" id="title" placeholder="Product Title" required />
-        <input type="text" id="price" placeholder="Price (optional)" />
-
-        <!-- 🔥 IMAGE UPLOAD – ALL FORMATS -->
-        <input type="file" id="imageFile" accept="image/*" required />
-
-        <input type="text" id="link" placeholder="E-commerce Link" required />
-        <textarea id="desc" placeholder="Product Description"></textarea>
-
-        <div class="preview">
-          <img id="previewImg" />
-        </div>
-
-        <button type="submit">Save Product</button>
-      </form>
-    </div>
-
-    <!-- PRODUCT LIST -->
-    <div class="panel">
-      <h2>Your Products</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Image</th>
-            <th>Title</th>
-            <th>Price</th>
-            <th>Clicks</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="productTable"></tbody>
-      </table>
-    </div>
-
   </div>
+
 </div>
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <script>
-/* LOGIN */
-function login() {
-  const pass = document.getElementById("loginPass").value;
-  if (pass === "admin123") {
-    document.getElementById("loginScreen").style.display = "none";
-    document.getElementById("app").style.display = "flex";
-    render();
-  } else {
-    alert("Wrong password 😈");
-  }
-}
-
-/* STORAGE */
-const PRODUCT_KEY = "pinfolio_products";
-const CLICK_KEY = "pinfolio_clicks";
-
-let products = JSON.parse(localStorage.getItem(PRODUCT_KEY)) || [];
-let clicks = JSON.parse(localStorage.getItem(CLICK_KEY)) || {};
-
-const table = document.getElementById("productTable");
-const totalProducts = document.getElementById("totalProducts");
-const totalClicks = document.getElementById("totalClicks");
-const topProduct = document.getElementById("topProduct");
-
-let editIndex = null;
-let uploadedImage = null;
-
-/* 🔥 IMAGE PREVIEW – SUPPORT ALL IMAGE FORMATS */
-document.getElementById("imageFile").addEventListener("change", function(e) {
-  const file = e.target.files[0];
-
-  if (!file) return;
-
-  /* Check if file is image */
-  if (!file.type.startsWith("image/")) {
-    alert("❌ Please upload only image files (JPG, PNG, WEBP, GIF, SVG, etc.)");
-    e.target.value = "";
-    return;
-  }
-
-  const reader = new FileReader();
-
-  reader.onload = function() {
-    uploadedImage = reader.result;
-    document.getElementById("previewImg").src = uploadedImage;
+  // 🔴 REPLACE WITH YOUR FIREBASE CONFIG
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "SENDER_ID",
+    appId: "APP_ID"
   };
 
-  reader.onerror = function() {
-    alert("❌ Cannot read this image format in browser.");
-  };
+  firebase.initializeApp(firebaseConfig);
 
-  reader.readAsDataURL(file);
-});
+  const auth = firebase.auth();
+  const db = firebase.firestore();
 
-function save() {
-  localStorage.setItem(PRODUCT_KEY, JSON.stringify(products));
-  localStorage.setItem(CLICK_KEY, JSON.stringify(clicks));
-  render();
-}
-
-function render() {
-  table.innerHTML = "";
-
-  let clickSum = 0;
-  let maxClicks = 0;
-  let best = "—";
-
-  products.forEach((p, i) => {
-    const c = clicks[p.title] || 0;
-    clickSum += c;
-    if (c > maxClicks) { maxClicks = c; best = p.title; }
-
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td><img class="thumb" src="${p.image}"></td>
-      <td>${p.title}</td>
-      <td>${p.price || "—"}</td>
-      <td>${c}</td>
-      <td class="actions">
-        <button class="edit" onclick="editProduct(${i})">Edit</button>
-        <button class="delete" onclick="deleteProduct(${i})">Delete</button>
-      </td>
-    `;
-    table.appendChild(row);
+  // 🔒 Protect dashboard
+  auth.onAuthStateChanged((user) => {
+    if (!user) {
+      window.location.href = "login.html";
+    } else {
+      loadProducts();
+      loadAnalytics();
+    }
   });
 
-  totalProducts.innerText = products.length;
-  totalClicks.innerText = clickSum;
-  topProduct.innerText = best;
-}
-
-/* ADD / EDIT PRODUCT */
-document.getElementById("productForm").addEventListener("submit", e => {
-  e.preventDefault();
-
-  if (!uploadedImage) {
-    alert("Please upload an image");
-    return;
+  function logout() {
+    auth.signOut().then(() => {
+      window.location.href = "login.html";
+    });
   }
 
-  const newProduct = {
-    title: title.value,
-    price: price.value,
-    image: uploadedImage,
-    desc: desc.value,
-    link: link.value
-  };
+  // Navigation
+  function showPage(pageId) {
+    document.getElementById("productsPage").classList.add("hidden");
+    document.getElementById("addPage").classList.add("hidden");
+    document.getElementById("analyticsPage").classList.add("hidden");
 
-  if (editIndex !== null) {
-    products[editIndex] = newProduct;
-    editIndex = null;
-  } else {
-    products.push(newProduct);
+    document.getElementById(pageId).classList.remove("hidden");
+
+    document.getElementById("tabProducts").classList.remove("active");
+    document.getElementById("tabAdd").classList.remove("active");
+    document.getElementById("tabAnalytics").classList.remove("active");
+
+    if (pageId === 'productsPage') tabProducts.classList.add("active");
+    if (pageId === 'addPage') tabAdd.classList.add("active");
+    if (pageId === 'analyticsPage') tabAnalytics.classList.add("active");
   }
 
-  uploadedImage = null;
-  document.getElementById("previewImg").src = "";
+  // Load products
+  function loadProducts() {
+    const productsDiv = document.getElementById("products");
+    productsDiv.innerHTML = "";
 
-  save();
-  e.target.reset();
-});
+    db.collection("products").get().then((snapshot) => {
+      snapshot.forEach((doc) => {
+        const data = doc.data();
 
-function deleteProduct(i) {
-  products.splice(i, 1);
-  save();
-}
+        const card = `
+          <div class="card">
+            <img src="${data.image}" />
+            <h3>${data.title}</h3>
+            <p>${data.desc}</p>
+            <p><b>${data.price}</b></p>
+            <a href="${data.link}" target="_blank">View Product</a>
+          </div>
+        `;
 
-function editProduct(i) {
-  const p = products[i];
-  title.value = p.title;
-  price.value = p.price;
-  desc.value = p.desc;
-  link.value = p.link;
-  uploadedImage = p.image;
-  document.getElementById("previewImg").src = p.image;
-  editIndex = i;
-}
+        productsDiv.innerHTML += card;
+      });
+    });
+  }
+
+  // Add new product
+  function addProduct() {
+    const title = document.getElementById("title").value;
+    const desc = document.getElementById("desc").value;
+    const price = document.getElementById("price").value;
+    const image = document.getElementById("image").value;
+    const link = document.getElementById("link").value;
+
+    db.collection("products").add({
+      title, desc, price, image, link
+    }).then(() => {
+      document.getElementById("msg").innerText = "Product added successfully!";
+      loadProducts();
+      loadAnalytics();
+    });
+  }
+
+  // Simple analytics
+  function loadAnalytics() {
+    db.collection("products").get().then((snapshot) => {
+      document.getElementById("totalProducts").innerText = snapshot.size;
+    });
+  }
 
 </script>
+
 </body>
 </html>
