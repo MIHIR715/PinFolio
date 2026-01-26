@@ -102,12 +102,12 @@ nav a {
   transform: translateY(-5px);
 }
 
-/* 🔥 UNIVERSAL IMAGE SUPPORT */
+/* UNIVERSAL IMAGE SUPPORT */
 .card img {
   width: 100%;
   max-height: 320px;
-  object-fit: contain;        /* SHOW FULL IMAGE – NO CROP */
-  background: #f7f7f7;        /* good for transparent PNG */
+  object-fit: contain;
+  background: #f7f7f7;
   padding: 10px;
 }
 
@@ -149,14 +149,8 @@ nav a {
   margin-bottom: 15px;
 }
 
-.modal-content h3 {
-  margin-bottom: 10px;
-}
-
-.modal-content p {
-  margin-bottom: 20px;
-  color: var(--muted);
-}
+.modal-content h3 { margin-bottom: 10px; }
+.modal-content p { margin-bottom: 20px; color: var(--muted); }
 
 .modal-content a {
   display: inline-block;
@@ -219,68 +213,69 @@ footer {
   © 2026 Pinfolio • Built with ❤️
 </footer>
 
-<script>
-/* LOAD PRODUCTS FROM LOCALSTORAGE */
-const PRODUCT_KEY = "pinfolio_products";
-let products = JSON.parse(localStorage.getItem(PRODUCT_KEY)) || [];
+<!-- FIREBASE + LOAD PRODUCTS -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-/* DEMO PRODUCT (remove later) */
-if (products.length === 0) {
-  products = [
-    {
-      title: "Me 2026 Vision Board",
-      desc: "Self care, discipline, consistency and positive vibes vision board for motivation and growth.",
-      image: "0ab0b22d-507a-4da6-b9c3-ed3aa58dffe0.png",   // your uploaded image
-      link: "https://pinterest.com"
-    }
-  ];
-  localStorage.setItem(PRODUCT_KEY, JSON.stringify(products));
-}
+  const firebaseConfig = {
+    apiKey: "AIzaSyCaIDSNGdwZs3VJk5gVbvb6UGeKP6u5dx8",
+    authDomain: "pinfolio-55246.firebaseapp.com",
+    projectId: "pinfolio-55246",
+    storageBucket: "pinfolio-55246.firebasestorage.app",
+    messagingSenderId: "864326590674",
+    appId: "1:864326590674:web:7e4ec37e91f0ac92c2cd0b"
+  };
 
-const grid = document.getElementById("productGrid");
-const modal = document.getElementById("modal");
-const modalImg = document.getElementById("modalImg");
-const modalTitle = document.getElementById("modalTitle");
-const modalDesc = document.getElementById("modalDesc");
-const modalLink = document.getElementById("modalLink");
-const modalClose = document.getElementById("modalClose");
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-/* RENDER GRID */
-function render() {
-  grid.innerHTML = "";
+  const grid = document.getElementById("productGrid");
+  const modal = document.getElementById("modal");
+  const modalImg = document.getElementById("modalImg");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalDesc = document.getElementById("modalDesc");
+  const modalLink = document.getElementById("modalLink");
+  const modalClose = document.getElementById("modalClose");
 
-  products.forEach(p => {
-    const card = document.createElement("div");
-    card.className = "card";
+  async function loadProducts() {
+    grid.innerHTML = "<p>Loading products...</p>";
 
-    card.innerHTML = `
-      <img src="${p.image}" alt="${p.title}"
-        onerror="this.src='https://via.placeholder.com/400x300?text=Image+Not+Found'">
-      <h3>${p.title}</h3>
-    `;
+    const querySnapshot = await getDocs(collection(db, "products"));
+    grid.innerHTML = "";
 
-    card.addEventListener("click", () => {
-      modalImg.src = p.image;
-      modalTitle.textContent = p.title;
-      modalDesc.textContent = p.desc || "No description available.";
-      modalLink.href = p.link || "#";
-      modal.style.display = "flex";
+    querySnapshot.forEach((doc) => {
+      const p = doc.data();
+
+      const card = document.createElement("div");
+      card.className = "card";
+
+      card.innerHTML = `
+        <img src="${p.image}" alt="${p.title}" onerror="this.src='https://via.placeholder.com/400x300?text=Image+Not+Found'">
+        <h3>${p.title}</h3>
+      `;
+
+      card.addEventListener("click", () => {
+        modalImg.src = p.image;
+        modalTitle.textContent = p.title;
+        modalDesc.textContent = p.desc || "No description available.";
+        modalLink.href = p.link || "#";
+        modal.style.display = "flex";
+      });
+
+      grid.appendChild(card);
     });
+  }
 
-    grid.appendChild(card);
+  modalClose.addEventListener("click", () => {
+    modal.style.display = "none";
   });
-}
 
-/* CLOSE MODAL */
-modalClose.addEventListener("click", () => {
-  modal.style.display = "none";
-});
+  window.addEventListener("click", (e) => {
+    if (e.target === modal) modal.style.display = "none";
+  });
 
-window.addEventListener("click", (e) => {
-  if (e.target === modal) modal.style.display = "none";
-});
-
-render();
+  loadProducts();
 </script>
 
 </body>
