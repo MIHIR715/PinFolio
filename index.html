@@ -79,12 +79,8 @@ nav a {
 }
 
 /* Responsive */
-@media (max-width: 900px) {
-  .grid { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 600px) {
-  .grid { grid-template-columns: 1fr; }
-}
+@media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
 
 /* CARD */
 .card {
@@ -98,11 +94,8 @@ nav a {
   flex-direction: column;
 }
 
-.card:hover {
-  transform: translateY(-5px);
-}
+.card:hover { transform: translateY(-5px); }
 
-/* UNIVERSAL IMAGE SUPPORT */
 .card img {
   width: 100%;
   max-height: 320px;
@@ -111,7 +104,6 @@ nav a {
   padding: 10px;
 }
 
-/* TITLE */
 .card h3 {
   font-size: 1.1rem;
   text-align: center;
@@ -213,7 +205,7 @@ footer {
   © 2026 Pinfolio • Built with ❤️
 </footer>
 
-<!-- FIREBASE + LOAD PRODUCTS -->
+<!-- Firebase + Firestore -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
   import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -222,7 +214,7 @@ footer {
     apiKey: "AIzaSyCaIDSNGdwZs3VJk5gVbvb6UGeKP6u5dx8",
     authDomain: "pinfolio-55246.firebaseapp.com",
     projectId: "pinfolio-55246",
-    storageBucket: "pinfolio-55246.firebasestorage.app",
+    storageBucket: "pinfolio-55246.appspot.com",
     messagingSenderId: "864326590674",
     appId: "1:864326590674:web:7e4ec37e91f0ac92c2cd0b"
   };
@@ -267,13 +259,8 @@ footer {
     });
   }
 
-  modalClose.addEventListener("click", () => {
-    modal.style.display = "none";
-  });
-
-  window.addEventListener("click", (e) => {
-    if (e.target === modal) modal.style.display = "none";
-  });
+  modalClose.addEventListener("click", () => { modal.style.display = "none"; });
+  window.addEventListener("click", (e) => { if (e.target === modal) modal.style.display = "none"; });
 
   loadProducts();
 </script>
