@@ -171,9 +171,13 @@
     }
 
     .preview img {
-      max-width: 200px;
+      max-width: 250px;
+      max-height: 250px;
+      object-fit: contain;
       border-radius: 12px;
       margin-top: 10px;
+      background: #f7f7f7;
+      padding: 10px;
     }
 
     /* TABLE */
@@ -190,7 +194,8 @@
     img.thumb {
       width: 60px;
       height: 50px;
-      object-fit: cover;
+      object-fit: contain;
+      background: #f7f7f7;
       border-radius: 8px;
     }
 
@@ -210,212 +215,217 @@
 </head>
 <body>
 
-  <!-- LOGIN SCREEN -->
-  <div class="login" id="loginScreen">
-    <div class="login-box">
-      <h2>Admin Login</h2>
-      <input type="password" id="loginPass" placeholder="Enter Password" />
-      <button onclick="login()">Login</button>
+<!-- LOGIN SCREEN -->
+<div class="login" id="loginScreen">
+  <div class="login-box">
+    <h2>Admin Login</h2>
+    <input type="password" id="loginPass" placeholder="Enter Password" />
+    <button onclick="login()">Login</button>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="app" id="app">
+
+  <div class="sidebar">
+    <div class="logo">PINFOLIO</div>
+    <div class="menu">
+      <a class="active">Dashboard</a>
+      <a>Products</a>
+      <a>Analytics</a>
     </div>
   </div>
 
-  <!-- DASHBOARD APP -->
-  <div class="app" id="app">
+  <div class="main">
+    <h1>Admin Dashboard</h1>
 
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-      <div class="logo">PINFOLIO</div>
-      <div class="menu">
-        <a class="active">Dashboard</a>
-        <a>Products</a>
-        <a>Analytics</a>
-      </div>
+    <!-- STATS -->
+    <div class="stats">
+      <div class="stat"><h3>Total Products</h3><p id="totalProducts">0</p></div>
+      <div class="stat"><h3>Total Clicks</h3><p id="totalClicks">0</p></div>
+      <div class="stat"><h3>Top Product</h3><p id="topProduct">—</p></div>
     </div>
 
-    <!-- MAIN -->
-    <div class="main">
-      <h1>Admin Dashboard</h1>
+    <!-- ADD PRODUCT -->
+    <div class="panel">
+      <h2>Add / Edit Product</h2>
+      <form class="form" id="productForm">
 
-      <!-- STATS -->
-      <div class="stats">
-        <div class="stat">
-          <h3>Total Products</h3>
-          <p id="totalProducts">0</p>
+        <input type="text" id="title" placeholder="Product Title" required />
+        <input type="text" id="price" placeholder="Price (optional)" />
+
+        <!-- 🔥 IMAGE UPLOAD – ALL FORMATS -->
+        <input type="file" id="imageFile" accept="image/*" required />
+
+        <input type="text" id="link" placeholder="E-commerce Link" required />
+        <textarea id="desc" placeholder="Product Description"></textarea>
+
+        <div class="preview">
+          <img id="previewImg" />
         </div>
-        <div class="stat">
-          <h3>Total Clicks</h3>
-          <p id="totalClicks">0</p>
-        </div>
-        <div class="stat">
-          <h3>Top Product</h3>
-          <p id="topProduct">—</p>
-        </div>
-      </div>
 
-      <!-- ADD PRODUCT -->
-      <div class="panel">
-        <h2>Add / Edit Product</h2>
-        <form class="form" id="productForm">
-          <input type="text" id="title" placeholder="Product Title" required />
-          <input type="text" id="price" placeholder="Price (optional)" />
-
-          <!-- IMAGE UPLOAD FIELD -->
-          <input type="file" id="imageFile" accept="image/*" required />
-
-          <input type="text" id="link" placeholder="E-commerce Link" required />
-          <textarea id="desc" placeholder="Product Description"></textarea>
-
-          <!-- IMAGE PREVIEW -->
-          <div class="preview"><img id="previewImg" /></div>
-
-          <button type="submit">Save Product</button>
-        </form>
-      </div>
-
-      <!-- PRODUCT LIST -->
-      <div class="panel">
-        <h2>Your Products</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Image</th>
-              <th>Title</th>
-              <th>Price</th>
-              <th>Clicks</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="productTable"></tbody>
-        </table>
-      </div>
-
+        <button type="submit">Save Product</button>
+      </form>
     </div>
+
+    <!-- PRODUCT LIST -->
+    <div class="panel">
+      <h2>Your Products</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Image</th>
+            <th>Title</th>
+            <th>Price</th>
+            <th>Clicks</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="productTable"></tbody>
+      </table>
+    </div>
+
   </div>
+</div>
 
 <script>
-  /* LOGIN */
-  function login() {
-    const pass = document.getElementById("loginPass").value;
-    if (pass === "admin123") {
-      document.getElementById("loginScreen").style.display = "none";
-      document.getElementById("app").style.display = "flex";
-      render();
-    } else {
-      alert("Wrong password 😈");
-    }
-  }
-
-  /* STORAGE */
-  const PRODUCT_KEY = "pinfolio_products";
-  const CLICK_KEY = "pinfolio_clicks";
-
-  let products = JSON.parse(localStorage.getItem(PRODUCT_KEY)) || [];
-  let clicks = JSON.parse(localStorage.getItem(CLICK_KEY)) || {};
-
-  const table = document.getElementById("productTable");
-  const totalProducts = document.getElementById("totalProducts");
-  const totalClicks = document.getElementById("totalClicks");
-  const topProduct = document.getElementById("topProduct");
-
-  let editIndex = null;
-  let uploadedImage = null;
-
-  /* IMAGE PREVIEW HANDLER */
-  document.getElementById("imageFile").addEventListener("change", function(e) {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-
-    reader.onload = function() {
-      uploadedImage = reader.result;
-      document.getElementById("previewImg").src = uploadedImage;
-    };
-
-    if (file) reader.readAsDataURL(file);
-  });
-
-  function save() {
-    localStorage.setItem(PRODUCT_KEY, JSON.stringify(products));
-    localStorage.setItem(CLICK_KEY, JSON.stringify(clicks));
+/* LOGIN */
+function login() {
+  const pass = document.getElementById("loginPass").value;
+  if (pass === "admin123") {
+    document.getElementById("loginScreen").style.display = "none";
+    document.getElementById("app").style.display = "flex";
     render();
+  } else {
+    alert("Wrong password 😈");
+  }
+}
+
+/* STORAGE */
+const PRODUCT_KEY = "pinfolio_products";
+const CLICK_KEY = "pinfolio_clicks";
+
+let products = JSON.parse(localStorage.getItem(PRODUCT_KEY)) || [];
+let clicks = JSON.parse(localStorage.getItem(CLICK_KEY)) || {};
+
+const table = document.getElementById("productTable");
+const totalProducts = document.getElementById("totalProducts");
+const totalClicks = document.getElementById("totalClicks");
+const topProduct = document.getElementById("topProduct");
+
+let editIndex = null;
+let uploadedImage = null;
+
+/* 🔥 IMAGE PREVIEW – SUPPORT ALL IMAGE FORMATS */
+document.getElementById("imageFile").addEventListener("change", function(e) {
+  const file = e.target.files[0];
+
+  if (!file) return;
+
+  /* Check if file is image */
+  if (!file.type.startsWith("image/")) {
+    alert("❌ Please upload only image files (JPG, PNG, WEBP, GIF, SVG, etc.)");
+    e.target.value = "";
+    return;
   }
 
-  function render() {
-    table.innerHTML = "";
+  const reader = new FileReader();
 
-    let clickSum = 0;
-    let maxClicks = 0;
-    let best = "—";
+  reader.onload = function() {
+    uploadedImage = reader.result;
+    document.getElementById("previewImg").src = uploadedImage;
+  };
 
-    products.forEach((p, i) => {
-      const c = clicks[p.title] || 0;
-      clickSum += c;
-      if (c > maxClicks) { maxClicks = c; best = p.title; }
+  reader.onerror = function() {
+    alert("❌ Cannot read this image format in browser.");
+  };
 
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td><img class="thumb" src="${p.image}" /></td>
-        <td>${p.title}</td>
-        <td>${p.price || "—"}</td>
-        <td>${c}</td>
-        <td class="actions">
-          <button class="edit" onclick="editProduct(${i})">Edit</button>
-          <button class="delete" onclick="deleteProduct(${i})">Delete</button>
-        </td>
-      `;
-      table.appendChild(row);
-    });
+  reader.readAsDataURL(file);
+});
 
-    totalProducts.innerText = products.length;
-    totalClicks.innerText = clickSum;
-    topProduct.innerText = best;
-  }
+function save() {
+  localStorage.setItem(PRODUCT_KEY, JSON.stringify(products));
+  localStorage.setItem(CLICK_KEY, JSON.stringify(clicks));
+  render();
+}
 
-  /* ADD / EDIT PRODUCT */
-  document.getElementById("productForm").addEventListener("submit", e => {
-    e.preventDefault();
+function render() {
+  table.innerHTML = "";
 
-    if (!uploadedImage) {
-      alert("Please upload an image");
-      return;
-    }
+  let clickSum = 0;
+  let maxClicks = 0;
+  let best = "—";
 
-    const newProduct = {
-      title: title.value,
-      price: price.value,
-      image: uploadedImage,
-      desc: desc.value,
-      link: link.value
-    };
+  products.forEach((p, i) => {
+    const c = clicks[p.title] || 0;
+    clickSum += c;
+    if (c > maxClicks) { maxClicks = c; best = p.title; }
 
-    if (editIndex !== null) {
-      products[editIndex] = newProduct;
-      editIndex = null;
-    } else {
-      products.push(newProduct);
-    }
-
-    uploadedImage = null;
-    document.getElementById("previewImg").src = "";
-
-    save();
-    e.target.reset();
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td><img class="thumb" src="${p.image}"></td>
+      <td>${p.title}</td>
+      <td>${p.price || "—"}</td>
+      <td>${c}</td>
+      <td class="actions">
+        <button class="edit" onclick="editProduct(${i})">Edit</button>
+        <button class="delete" onclick="deleteProduct(${i})">Delete</button>
+      </td>
+    `;
+    table.appendChild(row);
   });
 
-  function deleteProduct(i) {
-    products.splice(i, 1);
-    save();
+  totalProducts.innerText = products.length;
+  totalClicks.innerText = clickSum;
+  topProduct.innerText = best;
+}
+
+/* ADD / EDIT PRODUCT */
+document.getElementById("productForm").addEventListener("submit", e => {
+  e.preventDefault();
+
+  if (!uploadedImage) {
+    alert("Please upload an image");
+    return;
   }
 
-  function editProduct(i) {
-    const p = products[i];
-    title.value = p.title;
-    price.value = p.price;
-    desc.value = p.desc;
-    link.value = p.link;
-    uploadedImage = p.image;
-    document.getElementById("previewImg").src = p.image;
-    editIndex = i;
+  const newProduct = {
+    title: title.value,
+    price: price.value,
+    image: uploadedImage,
+    desc: desc.value,
+    link: link.value
+  };
+
+  if (editIndex !== null) {
+    products[editIndex] = newProduct;
+    editIndex = null;
+  } else {
+    products.push(newProduct);
   }
+
+  uploadedImage = null;
+  document.getElementById("previewImg").src = "";
+
+  save();
+  e.target.reset();
+});
+
+function deleteProduct(i) {
+  products.splice(i, 1);
+  save();
+}
+
+function editProduct(i) {
+  const p = products[i];
+  title.value = p.title;
+  price.value = p.price;
+  desc.value = p.desc;
+  link.value = p.link;
+  uploadedImage = p.image;
+  document.getElementById("previewImg").src = p.image;
+  editIndex = i;
+}
 
 </script>
 </body>
