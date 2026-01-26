@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Admin Dashboard</title>
+  <title>Admin Dashboard – Pinfolio</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f4f4f4;
       margin: 0;
+      background: #f4f4f4;
     }
 
     header {
@@ -21,18 +21,32 @@
       padding: 10px 20px;
     }
 
+    header button {
+      background: #ff6a00;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      cursor: pointer;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+
+    header button:hover {
+      background: #ff8500;
+    }
+
     nav {
-      background: #333;
       display: flex;
       gap: 20px;
+      background: #333;
       padding: 10px 20px;
     }
 
     nav a {
       color: white;
       text-decoration: none;
-      cursor: pointer;
       font-weight: bold;
+      cursor: pointer;
     }
 
     nav a.active {
@@ -43,15 +57,6 @@
       padding: 20px;
     }
 
-    button {
-      padding: 8px 15px;
-      border: none;
-      background: #ff6a00;
-      color: white;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-
     input, textarea {
       width: 100%;
       padding: 8px;
@@ -59,6 +64,22 @@
       border-radius: 5px;
       border: 1px solid #ccc;
     }
+
+    button.save {
+      background: #ff6a00;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button.save:hover {
+      background: #ff8500;
+    }
+
+    .hidden { display: none; }
 
     .products {
       display: grid;
@@ -81,8 +102,6 @@
       border-radius: 5px;
     }
 
-    .hidden { display: none; }
-
     .stats {
       display: flex;
       gap: 20px;
@@ -97,6 +116,8 @@
       text-align: center;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
+
+    #msg { color: green; margin-top: 10px; }
   </style>
 </head>
 
@@ -131,20 +152,18 @@
     <input type="text" id="image" placeholder="Image URL" />
     <input type="text" id="link" placeholder="Product Link" />
 
-    <button onclick="addProduct()">Save Product</button>
+    <button class="save" onclick="addProduct()">Save Product</button>
     <p id="msg"></p>
   </div>
 
   <!-- ANALYTICS PAGE -->
   <div id="analyticsPage" class="hidden">
     <h3>Analytics</h3>
-
     <div class="stats">
       <div class="stat-box">
         <h2 id="totalProducts">0</h2>
         <p>Total Products</p>
       </div>
-
       <div class="stat-box">
         <h2 id="totalUsers">1</h2>
         <p>Admin Users</p>
@@ -160,19 +179,17 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <script>
-  // 🔴 REPLACE WITH YOUR FIREBASE CONFIG
+  // ✅ Firebase config
   const firebaseConfig = {
-  apiKey: "AIzaSyCaIDSNGdwZs3VJk5gVbvb6UGeKP6u5dx8",
-  authDomain: "pinfolio-55246.firebaseapp.com",
-  projectId: "pinfolio-55246",
-  storageBucket: "pinfolio-55246.appspot.com",
-  messagingSenderId: "864326590674",
-  appId: "1:864326590674:web:7e4ec37e91f0ac92c2cd0b"
-};
-
+    apiKey: "AIzaSyCaIDSNGdwZs3VJk5gVbvb6UGeKP6u5dx8",
+    authDomain: "pinfolio-55246.firebaseapp.com",
+    projectId: "pinfolio-55246",
+    storageBucket: "pinfolio-55246.appspot.com",
+    messagingSenderId: "864326590674",
+    appId: "1:864326590674:web:7e4ec37e91f0ac92c2cd0b"
+  };
 
   firebase.initializeApp(firebaseConfig);
-
   const auth = firebase.auth();
   const db = firebase.firestore();
 
@@ -192,7 +209,7 @@
     });
   }
 
-  // Navigation
+  // NAVIGATION
   function showPage(pageId) {
     document.getElementById("productsPage").classList.add("hidden");
     document.getElementById("addPage").classList.add("hidden");
@@ -209,56 +226,66 @@
     if (pageId === 'analyticsPage') tabAnalytics.classList.add("active");
   }
 
-  // Load products
+  // LOAD PRODUCTS
   function loadProducts() {
     const productsDiv = document.getElementById("products");
-    productsDiv.innerHTML = "";
+    productsDiv.innerHTML = "<p>Loading products...</p>";
 
     db.collection("products").get().then((snapshot) => {
+      productsDiv.innerHTML = "";
       snapshot.forEach((doc) => {
         const data = doc.data();
-
         const card = `
           <div class="card">
-            <img src="${data.image}" />
+            <img src="${data.image}" onerror="this.src='https://via.placeholder.com/150x150?text=No+Image'" />
             <h3>${data.title}</h3>
             <p>${data.desc}</p>
             <p><b>${data.price}</b></p>
             <a href="${data.link}" target="_blank">View Product</a>
           </div>
         `;
-
         productsDiv.innerHTML += card;
       });
     });
   }
 
-  // Add new product
+  // ADD PRODUCT
   function addProduct() {
-    const title = document.getElementById("title").value;
-    const desc = document.getElementById("desc").value;
-    const price = document.getElementById("price").value;
-    const image = document.getElementById("image").value;
-    const link = document.getElementById("link").value;
+    const title = document.getElementById("title").value.trim();
+    const desc = document.getElementById("desc").value.trim();
+    const price = document.getElementById("price").value.trim();
+    const image = document.getElementById("image").value.trim();
+    const link = document.getElementById("link").value.trim();
 
-    db.collection("products").add({
-      title, desc, price, image, link
-    }).then(() => {
-      document.getElementById("msg").innerText = "Product added successfully!";
-      loadProducts();
-      loadAnalytics();
-    });
+    if (!title || !price || !image) {
+      document.getElementById("msg").innerText = "Title, Price, and Image are required!";
+      return;
+    }
+
+    db.collection("products").add({ title, desc, price, image, link })
+      .then(() => {
+        document.getElementById("msg").innerText = "Product added successfully!";
+        // Clear form
+        document.getElementById("title").value = "";
+        document.getElementById("desc").value = "";
+        document.getElementById("price").value = "";
+        document.getElementById("image").value = "";
+        document.getElementById("link").value = "";
+        loadProducts();
+        loadAnalytics();
+      })
+      .catch((err) => {
+        document.getElementById("msg").innerText = "Error adding product: " + err.message;
+      });
   }
 
-  // Simple analytics
+  // LOAD ANALYTICS
   function loadAnalytics() {
     db.collection("products").get().then((snapshot) => {
       document.getElementById("totalProducts").innerText = snapshot.size;
     });
   }
-
 </script>
 
 </body>
 </html>
-
