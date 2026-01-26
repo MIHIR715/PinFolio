@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Login</title>
+  <title>Login – Pinfolio Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
@@ -22,6 +22,7 @@
       border-radius: 10px;
       width: 300px;
       text-align: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     }
 
     input {
@@ -40,6 +41,7 @@
       cursor: pointer;
       border-radius: 5px;
       width: 100%;
+      font-weight: bold;
     }
 
     button:hover {
@@ -49,6 +51,7 @@
     .error {
       color: red;
       margin-top: 10px;
+      min-height: 18px;
     }
   </style>
 </head>
@@ -56,10 +59,10 @@
 <body>
 
   <div class="box">
-    <h2>Login</h2>
+    <h2>Admin Login</h2>
 
-    <input type="email" id="email" placeholder="Email" />
-    <input type="password" id="password" placeholder="Password" />
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="password" placeholder="Password" required />
 
     <button onclick="login()">Login</button>
 
@@ -71,33 +74,50 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
   <script>
-    // 🔴 PASTE YOUR FIREBASE CONFIG HERE
+    // ✅ Your Firebase Config
     const firebaseConfig = {
-  apiKey: "AIzaSyCaIDSNGdwZs3VJk5gVbvb6UGeKP6u5dx8",
-  authDomain: "pinfolio-55246.firebaseapp.com",
-  projectId: "pinfolio-55246",
-  storageBucket: "pinfolio-55246.firebasestorage.app",
-  messagingSenderId: "864326590674",
-  appId: "1:864326590674:web:7e4ec37e91f0ac92c2cd0b"
-};
+      apiKey: "AIzaSyCaIDSNGdwZs3VJk5gVbvb6UGeKP6u5dx8",
+      authDomain: "pinfolio-55246.firebaseapp.com",
+      projectId: "pinfolio-55246",
+      storageBucket: "pinfolio-55246.appspot.com",
+      messagingSenderId: "864326590674",
+      appId: "1:864326590674:web:7e4ec37e91f0ac92c2cd0b"
+    };
 
+    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
+    // Login function
     function login() {
-      const email = document.getElementById("email").value;
+      const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value;
 
+      if (!email || !password) {
+        document.getElementById("error").innerText = "Please enter email and password.";
+        return;
+      }
+
       auth.signInWithEmailAndPassword(email, password)
-        .then(() => {
-          window.location.href = "dashboard.html";
+        .then((cred) => {
+          // Login successful
+          console.log("Logged in:", cred.user.email);
+          window.location.href = "dashboard.html"; // redirect to dashboard
         })
         .catch((error) => {
+          console.error("Login error:", error);
           document.getElementById("error").innerText = error.message;
         });
     }
+
+    // Optional: Redirect if already logged in
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        console.log("Already logged in:", user.email);
+        window.location.href = "dashboard.html";
+      }
+    });
   </script>
 
 </body>
 </html>
-
