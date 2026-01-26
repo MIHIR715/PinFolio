@@ -108,7 +108,6 @@ nav a {
   font-size: 1.1rem;
   text-align: center;
   padding: 14px;
-  background: #fafafa;
 }
 
 /* MODAL */
@@ -205,64 +204,61 @@ footer {
   © 2026 Pinfolio • Built with ❤️
 </footer>
 
-<!-- Firebase + Firestore -->
+<!-- Firebase + Firestore (Modular) -->
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyCaIDSNGdwZs3VJk5gVbvb6UGeKP6u5dx8",
-    authDomain: "pinfolio-55246.firebaseapp.com",
-    projectId: "pinfolio-55246",
-    storageBucket: "pinfolio-55246.appspot.com",
-    messagingSenderId: "864326590674",
-    appId: "1:864326590674:web:7e4ec37e91f0ac92c2cd0b"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyCaIDSNGdwZs3VJk5gVbvb6UGeKP6u5dx8",
+  authDomain: "pinfolio-55246.firebaseapp.com",
+  projectId: "pinfolio-55246",
+  storageBucket: "pinfolio-55246.appspot.com",
+  messagingSenderId: "864326590674",
+  appId: "1:864326590674:web:7e4ec37e91f0ac92c2cd0b"
+};
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-  const grid = document.getElementById("productGrid");
-  const modal = document.getElementById("modal");
-  const modalImg = document.getElementById("modalImg");
-  const modalTitle = document.getElementById("modalTitle");
-  const modalDesc = document.getElementById("modalDesc");
-  const modalLink = document.getElementById("modalLink");
-  const modalClose = document.getElementById("modalClose");
+const grid = document.getElementById("productGrid");
+const modal = document.getElementById("modal");
+const modalImg = document.getElementById("modalImg");
+const modalTitle = document.getElementById("modalTitle");
+const modalDesc = document.getElementById("modalDesc");
+const modalLink = document.getElementById("modalLink");
+const modalClose = document.getElementById("modalClose");
 
-  async function loadProducts() {
-    grid.innerHTML = "<p>Loading products...</p>";
+async function loadProducts() {
+  grid.innerHTML = "<p>Loading products...</p>";
+  const querySnapshot = await getDocs(collection(db, "products"));
+  grid.innerHTML = "";
 
-    const querySnapshot = await getDocs(collection(db, "products"));
-    grid.innerHTML = "";
+  querySnapshot.forEach((doc) => {
+    const p = doc.data();
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <img src="${p.image}" alt="${p.title}" onerror="this.src='https://via.placeholder.com/400x300?text=Image+Not+Found'">
+      <h3>${p.title}</h3>
+    `;
 
-    querySnapshot.forEach((doc) => {
-      const p = doc.data();
-
-      const card = document.createElement("div");
-      card.className = "card";
-
-      card.innerHTML = `
-        <img src="${p.image}" alt="${p.title}" onerror="this.src='https://via.placeholder.com/400x300?text=Image+Not+Found'">
-        <h3>${p.title}</h3>
-      `;
-
-      card.addEventListener("click", () => {
-        modalImg.src = p.image;
-        modalTitle.textContent = p.title;
-        modalDesc.textContent = p.desc || "No description available.";
-        modalLink.href = p.link || "#";
-        modal.style.display = "flex";
-      });
-
-      grid.appendChild(card);
+    card.addEventListener("click", () => {
+      modalImg.src = p.image;
+      modalTitle.textContent = p.title;
+      modalDesc.textContent = p.desc || "No description available.";
+      modalLink.href = p.link || "#";
+      modal.style.display = "flex";
     });
-  }
 
-  modalClose.addEventListener("click", () => { modal.style.display = "none"; });
-  window.addEventListener("click", (e) => { if (e.target === modal) modal.style.display = "none"; });
+    grid.appendChild(card);
+  });
+}
 
-  loadProducts();
+modalClose.addEventListener("click", () => { modal.style.display = "none"; });
+window.addEventListener("click", (e) => { if (e.target === modal) modal.style.display = "none"; });
+
+loadProducts();
 </script>
 
 </body>
