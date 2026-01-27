@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Pinfolio – Your Style. Your Links. Your Store.</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 :root {
@@ -19,7 +19,13 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--dark); min-height: 100vh; }
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg);
+  color: var(--dark);
+  min-height: 100vh;
+}
 
 /* NAVBAR */
 nav {
@@ -31,15 +37,37 @@ nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 5px 20px var(--shadow);
+  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
 }
-.logo { font-size: 1.7rem; font-weight: 700; letter-spacing: 2px; }
-nav a { margin-left: 20px; text-decoration: none; color: var(--dark); font-weight: 500; }
+
+.logo {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+nav a {
+  margin-left: 20px;
+  text-decoration: none;
+  color: var(--dark);
+  font-weight: 500;
+}
 
 /* HERO */
-.hero { text-align: center; padding: 60px 20px 40px; }
-.hero h1 { font-size: 2.5rem; margin-bottom: 10px; }
-.hero p { color: var(--muted); font-size: 1.1rem; }
+.hero {
+  text-align: center;
+  padding: 60px 20px 40px;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.hero p {
+  color: var(--muted);
+  font-size: 1.1rem;
+}
 
 /* GRID */
 .grid {
@@ -47,41 +75,45 @@ nav a { margin-left: 20px; text-decoration: none; color: var(--dark); font-weigh
   margin: 40px auto 80px;
   padding: 0 20px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 25px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 30px;
 }
 
 /* CARD */
 .card {
   background: var(--panel);
   border-radius: var(--radius);
-  box-shadow: 0 5px 25px var(--shadow);
-  overflow: hidden;
+  box-shadow: 0 8px 25px var(--shadow);
+  padding: 15px;
   cursor: pointer;
-  transition: transform 0.2s;
-  height: 300px;
-  display: flex;
-  flex-direction: column;
+  transition: 0.3s;
+  text-align: center;
 }
-.card:hover { transform: translateY(-5px); }
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+}
 
 .card img {
   width: 100%;
   height: 200px;
-  object-fit: cover;
-  background: #eee;
+  object-fit: contain;          /* 🔥 FULL IMAGE – NO CUT */
+  background: #fafafa;
+  border-radius: 12px;
+  padding: 10px;
 }
 
 .card h3 {
-  font-size: 1.1rem;
-  padding: 15px;
-  text-align: center;
+  margin-top: 12px;
+  font-size: 1.05rem;
+  font-weight: 600;
 }
 
-/* MODAL BACKGROUND */
+/* MODAL */
 .modal {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  inset: 0;
   background: rgba(0,0,0,0.6);
   display: none;
   justify-content: center;
@@ -89,43 +121,45 @@ nav a { margin-left: 20px; text-decoration: none; color: var(--dark); font-weigh
   z-index: 9999;
 }
 
-/* RECTANGLE MODAL */
-.modal-content {
-  background: white;
-  border-radius: var(--radius);
-  width: 80%;
-  max-width: 900px;
-  height: 400px;
+.modal-box {
+  background: var(--panel);
+  width: 900px;                /* 🔥 BIG RECTANGLE */
+  max-width: 95%;
+  border-radius: 18px;
+  padding: 30px;
   display: flex;
-  overflow: hidden;
+  gap: 30px;
   position: relative;
 }
 
-/* LEFT IMAGE (30-40%) */
-.modal-left {
-  width: 35%;
-  background: #f4f4f4;
-}
-.modal-left img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+/* LEFT IMAGE */
+.modal-box img {
+  width: 35%;                  /* 35 : 65 PARTITION */
+  object-fit: contain;
+  background: #f7f7f7;
+  border-radius: 14px;
+  padding: 15px;
 }
 
-/* RIGHT DETAILS (60-70%) */
-.modal-right {
-  width: 65%;
-  padding: 30px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+/* RIGHT DETAILS */
+.modal-details {
+  flex: 1;
 }
 
-.modal-right h2 { margin-bottom: 15px; }
-.modal-right p { color: var(--muted); margin-bottom: 25px; }
+.modal-details h2 {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+}
 
-.modal-right a {
-  align-self: flex-start;
+.modal-details p {
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 25px;
+  font-size: 1rem;
+}
+
+.modal-details a {
+  display: inline-block;
   padding: 12px 30px;
   background: var(--accent);
   color: white;
@@ -134,22 +168,20 @@ nav a { margin-left: 20px; text-decoration: none; color: var(--dark); font-weigh
   font-weight: 600;
 }
 
-/* CLOSE BUTTON */
-.modal-close {
+/* CLOSE */
+.close {
   position: absolute;
-  top: 10px;
-  right: 20px;
-  font-size: 1.8rem;
+  top: 12px;
+  right: 18px;
+  font-size: 1.6rem;
   cursor: pointer;
+  color: var(--dark);
 }
 
-footer { text-align: center; padding: 30px; color: var(--muted); }
-
-/* RESPONSIVE */
-@media (max-width: 700px) {
-  .modal-content { flex-direction: column; height: auto; }
-  .modal-left, .modal-right { width: 100%; }
-  .modal-left { height: 250px; }
+footer {
+  text-align: center;
+  padding: 30px;
+  color: var(--muted);
 }
 </style>
 </head>
@@ -171,22 +203,20 @@ footer { text-align: center; padding: 30px; color: var(--muted); }
   <p>All my Pinterest finds – curated and shoppable</p>
 </section>
 
-<!-- PRODUCTS GRID -->
+<!-- PRODUCT GRID -->
 <div class="grid" id="productGrid"></div>
 
 <!-- MODAL -->
 <div class="modal" id="modal">
-  <div class="modal-content">
-    <span class="modal-close" id="modalClose">&times;</span>
+  <div class="modal-box">
+    <span class="close" onclick="modal.style.display='none'">&times;</span>
 
-    <div class="modal-left">
-      <img id="modalImg">
-    </div>
+    <img id="modalImg">
 
-    <div class="modal-right">
+    <div class="modal-details">
       <h2 id="modalTitle"></h2>
       <p id="modalDesc"></p>
-      <a id="modalLink" href="#" target="_blank">Open Product</a>
+      <a id="modalLink" target="_blank">Open Product</a>
     </div>
   </div>
 </div>
@@ -195,7 +225,7 @@ footer { text-align: center; padding: 30px; color: var(--muted); }
   © 2026 Pinfolio • Built with ❤️
 </footer>
 
-<!-- FIREBASE + LOAD PRODUCTS -->
+<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -218,37 +248,43 @@ const modalImg = document.getElementById("modalImg");
 const modalTitle = document.getElementById("modalTitle");
 const modalDesc = document.getElementById("modalDesc");
 const modalLink = document.getElementById("modalLink");
-const modalClose = document.getElementById("modalClose");
 
-/* LIVE PRODUCTS FROM DASHBOARD */
+/* LOAD PRODUCTS FROM DASHBOARD */
 onSnapshot(collection(db, "products"), (snapshot) => {
   grid.innerHTML = "";
 
   snapshot.forEach(doc => {
     const p = doc.data();
 
+    if (p.show === false) return;   // hidden product not shown
+
     const card = document.createElement("div");
     card.className = "card";
+
     card.innerHTML = `
-      <img src="${p.image}" onerror="this.src='https://via.placeholder.com/400x300?text=No+Image'">
+      <img src="${p.image}">
       <h3>${p.title}</h3>
     `;
 
-    card.onclick = () => {
-      modalImg.src = p.image;
-      modalTitle.innerText = p.title;
-      modalDesc.innerText = p.desc || "No description available.";
-      modalLink.href = p.link || "#";
-      modal.style.display = "flex";
-    };
-
+    card.onclick = () => openModal(p);
     grid.appendChild(card);
   });
 });
 
-/* CLOSE MODAL */
-modalClose.onclick = () => modal.style.display = "none";
-window.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
+/* OPEN MODAL */
+function openModal(p) {
+  modalImg.src = p.image;
+  modalTitle.textContent = p.title;
+  modalDesc.textContent = p.desc || "No description available.";
+  modalLink.href = p.link || "#";
+
+  modal.style.display = "flex";
+}
+
+/* CLOSE ON OUTSIDE CLICK */
+window.onclick = (e) => {
+  if (e.target === modal) modal.style.display = "none";
+};
 </script>
 
 </body>
