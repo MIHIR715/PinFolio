@@ -1,127 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pinfolio Login</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pinfolio Login</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-<style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-body {
-  font-family: 'Poppins', sans-serif;
-  background: #f2ede5;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f2ede5;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-/* LOGIN CARD */
-.login-card {
-  background: white;
-  padding: 40px;
-  width: 350px;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-  text-align: center;
-}
+    .login-card {
+      background: white;
+      padding: 40px;
+      width: 350px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      text-align: center;
+    }
 
-.login-card h2 {
-  margin-bottom: 30px;
-  letter-spacing: 2px;
-}
+    .login-card h2 {
+      margin-bottom: 30px;
+      letter-spacing: 2px;
+    }
 
-/* INPUTS */
-.login-card input {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 15px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-}
+    .login-card input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
 
-/* BUTTON */
-.login-card button {
-  width: 100%;
-  padding: 12px;
-  background: #b8a98f;
-  color: white;
-  border: none;
-  border-radius: 30px;
-  font-weight: 600;
-  cursor: pointer;
-  margin-top: 10px;
-}
+    .login-card button {
+      width: 100%;
+      padding: 12px;
+      background: #b8a98f;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+    }
 
-.login-card button:hover {
-  background: #9e8c6f;
-}
+    .login-card button:hover {
+      background: #9e8c6f;
+    }
 
-/* MESSAGE */
-#msg {
-  margin-top: 15px;
-  font-weight: 600;
-  color: red;
-}
-</style>
+    #msg {
+      margin-top: 15px;
+      font-weight: 600;
+      color: red;
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="login-card">
-  <h2>PINFOLIO</h2>
+  <div class="login-card">
+    <h2>PINFOLIO</h2>
 
-  <input type="email" id="email" placeholder="Email" required>
-  <input type="password" id="password" placeholder="Password" required>
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="password" placeholder="Password" required />
 
-  <button onclick="login()">Login</button>
+    <button onclick="login()">Login</button>
 
-  <p id="msg"></p>
-</div>
+    <p id="msg"></p>
+  </div>
 
-<!-- FIREBASE AUTH -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  <!-- FIREBASE AUTH -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCaIDSNGdwZs3VJk5gVbvb6UGeKP6u5dx8",
-  authDomain: "pinfolio-55246.firebaseapp.com",
-  projectId: "pinfolio-55246",
-  storageBucket: "pinfolio-55246.appspot.com",
-  messagingSenderId: "864326590674",
-  appId: "1:864326590674:web:7e4ec37e91f0ac92c2cd0b"
-};
+    const firebaseConfig = {
+      apiKey: "AIzaSyCaIDSNGdwZs3VJk5gVbvb6UGeKP6u5dx8",
+      authDomain: "pinfolio-55246.firebaseapp.com",
+      projectId: "pinfolio-55246",
+      storageBucket: "pinfolio-55246.appspot.com",
+      messagingSenderId: "864326590674",
+      appId: "1:864326590674:web:7e4ec37e91f0ac92c2cd0b"
+    };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-/* AUTO REDIRECT IF ALREADY LOGGED IN */
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    window.location.href = "dashboard.html";
-  }
-});
+    // LOGIN FUNCTION
+    window.login = () => {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const msg = document.getElementById("msg");
 
-/* LOGIN FUNCTION */
-window.login = () => {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  const msg = document.getElementById("msg");
+      msg.innerText = "";
 
-  signInWithEmailAndPassword(auth, email, password)
-    .then(() => {
-      window.location.href = "dashboard.html";
-    })
-    .catch((error) => {
-      msg.innerText = error.message;
-    });
-};
-</script>
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          // start session timer
+          localStorage.setItem("sessionStart", Date.now());
+
+          window.location.href = "dashboard.html";
+        })
+        .catch((error) => {
+          msg.innerText = error.message;
+        });
+    };
+  </script>
 
 </body>
 </html>
