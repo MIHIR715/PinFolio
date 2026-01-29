@@ -98,13 +98,12 @@ h2 {
 
 .card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 15px 35px rgba(0,0,0,0.12);
 }
 
 .card img {
   width: 100%;
   height: 180px;
-  object-fit: contain;      /* 🔥 FULL IMAGE, NO CUT */
+  object-fit: contain;
   background: #fafafa;
   border-radius: 10px;
   padding: 10px;
@@ -116,7 +115,7 @@ h2 {
   font-weight: 600;
 }
 
-/* ADD PRODUCT FORM */
+/* ADD PRODUCT */
 .form-box {
   background: var(--panel);
   max-width: 500px;
@@ -125,13 +124,13 @@ h2 {
   box-shadow: 0 10px 30px var(--shadow);
 }
 
-.form-box input, .form-box textarea {
+.form-box input,
+.form-box textarea {
   width: 100%;
   padding: 12px;
   margin-bottom: 15px;
   border-radius: 12px;
   border: 1px solid #ccc;
-  font-size: 1rem;
 }
 
 .form-box button {
@@ -142,20 +141,7 @@ h2 {
   border: none;
   border-radius: 30px;
   font-weight: 600;
-  cursor: pointer;
 }
-
-/* ANALYTICS */
-.stat {
-  background: var(--panel);
-  padding: 35px;
-  max-width: 300px;
-  border-radius: var(--radius);
-  box-shadow: 0 10px 30px var(--shadow);
-  text-align: center;
-}
-.stat h1 { font-size: 3rem; }
-.stat p { color: var(--muted); }
 
 /* MODAL */
 .modal {
@@ -187,42 +173,6 @@ h2 {
   padding: 15px;
 }
 
-.modal .details {
-  flex: 1;
-}
-
-.modal h3 {
-  font-size: 1.6rem;
-  margin-bottom: 10px;
-}
-
-.modal p {
-  color: var(--muted);
-  margin-bottom: 20px;
-  line-height: 1.6;
-}
-
-.modal a {
-  display: inline-block;
-  padding: 10px 20px;
-  background: var(--accent);
-  color: white;
-  border-radius: 25px;
-  text-decoration: none;
-  margin-bottom: 20px;
-}
-
-.actions button {
-  padding: 10px 15px;
-  border: none;
-  border-radius: 8px;
-  margin-right: 10px;
-  cursor: pointer;
-}
-
-.delete { background: #ef4444; color: white; }
-.toggle { background: #444; color: white; }
-
 .close {
   position: absolute;
   top: 10px;
@@ -235,7 +185,6 @@ h2 {
 
 <body>
 
-<!-- SIDEBAR -->
 <div class="sidebar">
   <h2>PINFOLIO</h2>
   <button id="btnProducts" class="active" onclick="show('products')">Products</button>
@@ -243,61 +192,46 @@ h2 {
   <button id="btnAnalytics" onclick="show('analytics')">Analytics</button>
 </div>
 
-<!-- MAIN -->
 <div class="main">
-
-  <!-- PRODUCTS -->
   <div id="products" class="section active">
     <h2>Products</h2>
     <div class="grid" id="productGrid"></div>
   </div>
 
-  <!-- ADD -->
   <div id="add" class="section">
     <h2>Add Product</h2>
     <div class="form-box">
-      <input type="text" id="title" placeholder="Product Title">
+      <input id="title" placeholder="Product Title">
       <textarea id="desc" placeholder="Description"></textarea>
-      <input type="text" id="link" placeholder="Product Link">
-      <input type="text" id="image" placeholder="Image URL">
+      <input id="link" placeholder="Product Link">
+      <input id="image" placeholder="Image URL">
       <button onclick="addProduct()">Add Product</button>
-      <p id="msg"></p>
     </div>
   </div>
 
-  <!-- ANALYTICS -->
   <div id="analytics" class="section">
     <h2>Analytics</h2>
-    <div class="stat">
-      <h1 id="totalProducts">0</h1>
-      <p>Total Products</p>
-    </div>
+    <h1 id="totalProducts">0</h1>
   </div>
-
 </div>
 
-<!-- MODAL -->
 <div class="modal" id="modal">
   <div class="modal-box">
     <span class="close" onclick="modal.style.display='none'">&times;</span>
     <img id="modalImg">
-    <div class="details">
+    <div>
       <h3 id="modalTitle"></h3>
       <p id="modalDesc"></p>
       <a id="modalLink" target="_blank">Open Product</a>
-
-      <div class="actions">
-        <button class="delete" id="deleteBtn">Delete</button>
-        <button class="toggle" id="toggleBtn">Hide</button>
-      </div>
     </div>
   </div>
 </div>
 
-<!-- FIREBASE -->
+<!-- FIREBASE + AUTH + SESSION -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCaIDSNGdwZs3VJk5gVbvb6UGeKP6u5dx8",
@@ -309,90 +243,67 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 const db = getFirestore(app);
 
-const grid = document.getElementById("productGrid");
-const modal = document.getElementById("modal");
-const modalImg = document.getElementById("modalImg");
-const modalTitle = document.getElementById("modalTitle");
-const modalDesc = document.getElementById("modalDesc");
-const modalLink = document.getElementById("modalLink");
-const deleteBtn = document.getElementById("deleteBtn");
-const toggleBtn = document.getElementById("toggleBtn");
-const totalProducts = document.getElementById("totalProducts");
+/* 🔐 SESSION CONTROL */
+const SESSION_LIMIT = 5 * 60 * 1000;
+let timer;
+
+function resetTimer() {
+  clearTimeout(timer);
+  timer = setTimeout(() => {
+    localStorage.clear();
+    signOut(auth).then(() => {
+      window.location.href = "login.html";
+    });
+  }, SESSION_LIMIT);
+}
+
+onAuthStateChanged(auth, user => {
+  if (!user) {
+    window.location.href = "login.html";
+  } else {
+    resetTimer();
+  }
+});
+
+["click","mousemove","keypress","scroll"].forEach(e =>
+  document.addEventListener(e, resetTimer)
+);
 
 /* NAV */
-window.show = (id) => {
+window.show = id => {
   document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
-  document.querySelectorAll(".sidebar button").forEach(b => b.classList.remove("active"));
   document.getElementById(id).classList.add("active");
-
-  if (id === "products") btnProducts.classList.add("active");
-  if (id === "add") btnAdd.classList.add("active");
-  if (id === "analytics") btnAnalytics.classList.add("active");
 };
 
-/* LOAD PRODUCTS */
-onSnapshot(collection(db,"products"), (snapshot) => {
+/* PRODUCTS */
+const grid = document.getElementById("productGrid");
+const totalProducts = document.getElementById("totalProducts");
+
+onSnapshot(collection(db,"products"), snap => {
   grid.innerHTML = "";
-  totalProducts.innerText = snapshot.size;
+  totalProducts.innerText = snap.size;
 
-  snapshot.forEach(docSnap => {
-    const p = docSnap.data();
-
+  snap.forEach(d => {
+    const p = d.data();
     const card = document.createElement("div");
     card.className = "card";
-    card.innerHTML = `
-      <img src="${p.image}">
-      <h4>${p.title}</h4>
-    `;
-
-    card.onclick = () => openModal(docSnap.id, p);
+    card.innerHTML = `<img src="${p.image}"><h4>${p.title}</h4>`;
     grid.appendChild(card);
   });
 });
 
-/* MODAL */
-function openModal(id, p) {
-  modalImg.src = p.image;
-  modalTitle.textContent = p.title;
-  modalDesc.textContent = p.desc || "No description available.";
-  modalLink.href = p.link || "#";
-  toggleBtn.textContent = p.show === false ? "Show" : "Hide";
-
-  deleteBtn.onclick = () => deleteProduct(id);
-  toggleBtn.onclick = () => toggleShow(id, p.show !== false);
-
-  modal.style.display = "flex";
-}
-
-/* ADD PRODUCT */
+/* ADD */
 window.addProduct = async () => {
-  const title = document.getElementById("title").value;
-  const desc = document.getElementById("desc").value;
-  const link = document.getElementById("link").value;
-  const image = document.getElementById("image").value;
-
-  if (!title || !image) return alert("Title & Image required");
-
-  await addDoc(collection(db,"products"), { title, desc, link, image, show:true });
-
-  alert("Product Added!");
+  await addDoc(collection(db,"products"), {
+    title: title.value,
+    desc: desc.value,
+    link: link.value,
+    image: image.value
+  });
 };
-
-/* DELETE */
-async function deleteProduct(id) {
-  if (confirm("Delete this product?")) {
-    await deleteDoc(doc(db,"products",id));
-    modal.style.display="none";
-  }
-}
-
-/* SHOW / HIDE */
-async function toggleShow(id,current) {
-  await updateDoc(doc(db,"products",id), { show: !current });
-  modal.style.display="none";
-}
 </script>
 
 </body>
