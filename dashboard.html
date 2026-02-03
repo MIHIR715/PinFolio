@@ -1,198 +1,227 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Pinfolio Dashboard</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-:root {
-  --bg: #f2ede5;
-  --panel: #ffffff;
-  --accent: #b8a98f;
-  --dark: #2a2a2a;
-  --muted: #777;
-  --radius: 16px;
-  --shadow: rgba(0,0,0,0.08);
+:root{
+  --bg:#f2ede5;
+  --panel:#fff;
+  --accent:#b8a98f;
+  --dark:#2a2a2a;
+  --muted:#777;
+  --radius:16px;
+  --shadow:rgba(0,0,0,.08);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+*{box-sizing:border-box;margin:0;padding:0}
 
-body {
-  font-family: 'Poppins', sans-serif;
-  background: var(--bg);
-  display: flex;
-  height: 100vh;
-  color: var(--dark);
+body{
+  font-family:'Poppins',sans-serif;
+  background:var(--bg);
+  display:flex;
+  height:100vh;
+  color:var(--dark);
 }
 
-/* SIDEBAR */
-.sidebar {
-  width: 260px;
-  background: var(--panel);
-  padding: 30px 20px;
-  box-shadow: 5px 0 20px var(--shadow);
-  display: flex;
-  flex-direction: column;
+/* ---------------- SIDEBAR ---------------- */
+.sidebar{
+  width:260px;
+  background:var(--panel);
+  padding:30px 20px;
+  box-shadow:5px 0 20px var(--shadow);
+  display:flex;
+  flex-direction:column;
 }
 
-.sidebar h2 {
-  text-align: center;
-  margin-bottom: 40px;
-  letter-spacing: 2px;
+.sidebar h2{
+  text-align:center;
+  margin-bottom:40px;
+  letter-spacing:2px;
 }
 
-.sidebar button {
-  margin-bottom: 15px;
-  padding: 14px;
-  border: none;
-  border-radius: 12px;
-  background: #f5f2ec;
-  color: var(--dark);
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.3s;
-  text-align: left;
+.sidebar button{
+  margin-bottom:12px;
+  padding:14px;
+  border:none;
+  border-radius:12px;
+  background:#f5f2ec;
+  font-weight:600;
+  cursor:pointer;
+  transition:.25s;
 }
 
-.sidebar button.active,
-.sidebar button:hover {
-  background: var(--accent);
-  color: white;
+.sidebar button:hover,
+.sidebar button.active{
+  background:var(--accent);
+  color:#fff;
 }
 
-/* MAIN */
-.main {
-  flex: 1;
-  padding: 35px;
-  overflow-y: auto;
+/* ---------------- MAIN ---------------- */
+.main{
+  flex:1;
+  padding:35px;
+  overflow-y:auto;
 }
 
-.section { display: none; }
-.section.active { display: block; }
+.section{display:none}
+.section.active{display:block}
 
-h2 {
-  font-size: 1.8rem;
-  margin-bottom: 25px;
-  font-weight: 700;
+/* ---------------- GRID ---------------- */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:25px;
 }
 
-/* PRODUCT GRID */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 25px;
+.card{
+  background:var(--panel);
+  border-radius:var(--radius);
+  padding:15px;
+  box-shadow:0 8px 25px var(--shadow);
+  cursor:pointer;
+  transition:.25s;
+  text-align:center;
 }
 
-.card {
-  background: var(--panel);
-  border-radius: var(--radius);
-  box-shadow: 0 8px 25px var(--shadow);
-  padding: 15px;
-  cursor: pointer;
-  transition: 0.3s;
-  text-align: center;
+.card:hover{
+  transform:translateY(-6px);
 }
 
-.card:hover {
-  transform: translateY(-6px);
+.card img{
+  width:100%;
+  height:180px;
+  object-fit:contain;
+  background:#fafafa;
+  border-radius:10px;
+  padding:10px;
 }
 
-.card img {
-  width: 100%;
-  height: 180px;
-  object-fit: contain;
-  background: #fafafa;
-  border-radius: 10px;
-  padding: 10px;
+.card h4{
+  margin-top:12px;
 }
 
-.card h4 {
-  margin-top: 12px;
-  font-size: 1rem;
-  font-weight: 600;
-}
-
-/* ADD PRODUCT */
-.form-box {
-  background: var(--panel);
-  max-width: 500px;
-  padding: 30px;
-  border-radius: var(--radius);
-  box-shadow: 0 10px 30px var(--shadow);
+/* ---------------- FORM ---------------- */
+.form-box{
+  max-width:500px;
+  background:#fff;
+  padding:25px;
+  border-radius:16px;
+  box-shadow:0 10px 25px var(--shadow);
 }
 
 .form-box input,
-.form-box textarea {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 15px;
-  border-radius: 12px;
-  border: 1px solid #ccc;
+.form-box textarea{
+  width:100%;
+  padding:12px;
+  margin-bottom:14px;
+  border-radius:10px;
+  border:1px solid #ccc;
 }
 
-.form-box button {
-  width: 100%;
-  padding: 12px;
-  background: var(--accent);
-  color: white;
-  border: none;
-  border-radius: 30px;
-  font-weight: 600;
+.form-box button{
+  width:100%;
+  padding:12px;
+  border:none;
+  background:var(--accent);
+  color:#fff;
+  border-radius:25px;
+  font-weight:600;
 }
 
-/* MODAL */
-.modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
+/* ---------------- MODAL ---------------- */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
 }
 
-.modal-box {
-  background: var(--panel);
-  width: 800px;
-  max-width: 95%;
-  border-radius: 16px;
-  padding: 25px;
-  display: flex;
-  gap: 25px;
-  position: relative;
+.modal-box{
+  width:820px;
+  max-width:95%;
+  height:420px;
+  background:#fff;
+  border-radius:18px;
+  display:flex;
+  overflow:hidden;
+  position:relative;
 }
 
-.modal img {
-  width: 40%;
-  object-fit: contain;
-  background: #f7f7f7;
-  border-radius: 12px;
-  padding: 15px;
+/* left image */
+.modal img{
+  width:45%;
+  object-fit:contain;
+  background:#f7f7f7;
+  padding:20px;
 }
 
-.close {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  font-size: 1.5rem;
-  cursor: pointer;
+/* right panel */
+.modal-right{
+  flex:1;
+  padding:25px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.modal-right input,
+.modal-right textarea{
+  width:100%;
+  padding:10px;
+  border-radius:10px;
+  border:1px solid #ccc;
+}
+
+.actions{
+  display:flex;
+  gap:10px;
+  margin-top:auto;
+}
+
+.actions button{
+  flex:1;
+  padding:10px;
+  border:none;
+  border-radius:10px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.save{background:#4caf50;color:#fff}
+.delete{background:#e74c3c;color:#fff}
+.hide{background:#555;color:#fff}
+
+.close{
+  position:absolute;
+  top:10px;
+  right:15px;
+  font-size:22px;
+  cursor:pointer;
 }
 </style>
 </head>
 
 <body>
 
+<!-- SIDEBAR -->
 <div class="sidebar">
   <h2>PINFOLIO</h2>
-  <button id="btnProducts" class="active" onclick="show('products')">Products</button>
-  <button id="btnAdd" onclick="show('add')">Add Product</button>
-  <button id="btnAnalytics" onclick="show('analytics')">Analytics</button>
+  <button onclick="show('products')" class="active">Products</button>
+  <button onclick="show('add')">Add Product</button>
+  <button onclick="show('analytics')">Analytics</button>
 </div>
 
+<!-- MAIN -->
 <div class="main">
+
   <div id="products" class="section active">
     <h2>Products</h2>
     <div class="grid" id="productGrid"></div>
@@ -201,108 +230,148 @@ h2 {
   <div id="add" class="section">
     <h2>Add Product</h2>
     <div class="form-box">
-      <input id="title" placeholder="Product Title">
+      <input id="title" placeholder="Title">
       <textarea id="desc" placeholder="Description"></textarea>
-      <input id="link" placeholder="Product Link">
+      <input id="link" placeholder="Link">
       <input id="image" placeholder="Image URL">
       <button onclick="addProduct()">Add Product</button>
     </div>
   </div>
 
   <div id="analytics" class="section">
-    <h2>Analytics</h2>
+    <h2>Total Products</h2>
     <h1 id="totalProducts">0</h1>
   </div>
+
 </div>
 
+<!-- MODAL -->
 <div class="modal" id="modal">
   <div class="modal-box">
+
     <span class="close" onclick="modal.style.display='none'">&times;</span>
+
     <img id="modalImg">
-    <div>
-      <h3 id="modalTitle"></h3>
-      <p id="modalDesc"></p>
-      <a id="modalLink" target="_blank">Open Product</a>
+
+    <div class="modal-right">
+      <input id="mTitle">
+      <textarea id="mDesc"></textarea>
+      <input id="mLink">
+      <input id="mImage">
+
+      <div class="actions">
+        <button class="save" onclick="saveEdit()">Save</button>
+        <button class="hide" onclick="toggleHide()">Hide</button>
+        <button class="delete" onclick="deleteProduct()">Delete</button>
+      </div>
     </div>
+
   </div>
 </div>
 
-<!-- FIREBASE + AUTH + SESSION -->
+<!-- FIREBASE SCRIPT -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+/* ---------- CONFIG ---------- */
 const firebaseConfig = {
-  apiKey: "AIzaSyCaIDSNGdwZs3VJk5gVbvb6UGeKP6u5dx8",
-  authDomain: "pinfolio-55246.firebaseapp.com",
-  projectId: "pinfolio-55246",
-  storageBucket: "pinfolio-55246.appspot.com",
-  messagingSenderId: "864326590674",
-  appId: "1:864326590674:web:7e4ec37e91f0ac92c2cd0b"
+  apiKey:"AIzaSyCaIDSNGdwZs3VJk5gVbvb6UGeKP6u5dx8",
+  authDomain:"pinfolio-55246.firebaseapp.com",
+  projectId:"pinfolio-55246",
+  storageBucket:"pinfolio-55246.appspot.com",
+  messagingSenderId:"864326590674",
+  appId:"1:864326590674:web:7e4ec37e91f0ac92c2cd0b"
 };
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
-/* 🔐 SESSION CONTROL */
-const SESSION_LIMIT = 5 * 60 * 1000;
-let timer;
-
-function resetTimer() {
-  clearTimeout(timer);
-  timer = setTimeout(() => {
-    localStorage.clear();
-    signOut(auth).then(() => {
-      window.location.href = "login.html";
-    });
-  }, SESSION_LIMIT);
-}
-
-onAuthStateChanged(auth, user => {
-  if (!user) {
-    window.location.href = "login.html";
-  } else {
-    resetTimer();
-  }
+/* ---------- SESSION ---------- */
+onAuthStateChanged(auth, u=>{
+  if(!u) location="login.html";
 });
 
-["click","mousemove","keypress","scroll"].forEach(e =>
-  document.addEventListener(e, resetTimer)
-);
-
-/* NAV */
-window.show = id => {
-  document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+/* ---------- NAV ---------- */
+window.show = id=>{
+  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
   document.getElementById(id).classList.add("active");
 };
 
-/* PRODUCTS */
-const grid = document.getElementById("productGrid");
-const totalProducts = document.getElementById("totalProducts");
+/* ---------- DATA ---------- */
+const grid = productGrid;
+let currentId=null;
+let currentHidden=false;
 
-onSnapshot(collection(db,"products"), snap => {
-  grid.innerHTML = "";
-  totalProducts.innerText = snap.size;
+onSnapshot(collection(db,"products"), snap=>{
+  grid.innerHTML="";
+  totalProducts.innerText=snap.size;
 
-  snap.forEach(d => {
-    const p = d.data();
-    const card = document.createElement("div");
-    card.className = "card";
-    card.innerHTML = `<img src="${p.image}"><h4>${p.title}</h4>`;
+  snap.forEach(d=>{
+    const p=d.data();
+    if(p.hidden) return;
+
+    const card=document.createElement("div");
+    card.className="card";
+    card.innerHTML=`<img src="${p.image}"><h4>${p.title}</h4>`;
+    card.onclick=()=>openModal(d.id,p);
+
     grid.appendChild(card);
   });
 });
 
-/* ADD */
-window.addProduct = async () => {
-  await addDoc(collection(db,"products"), {
-    title: title.value,
-    desc: desc.value,
-    link: link.value,
-    image: image.value
+/* ---------- ADD ---------- */
+window.addProduct=async()=>{
+  await addDoc(collection(db,"products"),{
+    title:title.value,
+    desc:desc.value,
+    link:link.value,
+    image:image.value,
+    hidden:false
   });
+};
+
+/* ---------- MODAL ---------- */
+function openModal(id,p){
+  currentId=id;
+  currentHidden=p.hidden||false;
+
+  modalImg.src=p.image;
+  mTitle.value=p.title;
+  mDesc.value=p.desc;
+  mLink.value=p.link;
+  mImage.value=p.image;
+
+  modal.style.display="flex";
+}
+
+/* ---------- SAVE ---------- */
+window.saveEdit=async()=>{
+  await updateDoc(doc(db,"products",currentId),{
+    title:mTitle.value,
+    desc:mDesc.value,
+    link:mLink.value,
+    image:mImage.value
+  });
+  modal.style.display="none";
+};
+
+/* ---------- DELETE ---------- */
+window.deleteProduct=async()=>{
+  if(confirm("Delete this product?")){
+    await deleteDoc(doc(db,"products",currentId));
+    modal.style.display="none";
+  }
+};
+
+/* ---------- HIDE ---------- */
+window.toggleHide=async()=>{
+  await updateDoc(doc(db,"products",currentId),{
+    hidden:!currentHidden
+  });
+  modal.style.display="none";
 };
 </script>
 
