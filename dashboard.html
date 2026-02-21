@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>Dashboard</title>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+/* ======================================================
+   RESET
+====================================================== */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: Georgia, serif;
+}
+
+body{
+    background:#ebe9e8;
+    color:#2f3b3f;
+}
+
+/* ======================================================
+   TOPBAR
+====================================================== */
+.topbar{
+    height:70px;
+    background:#d9d7d6;
+    display:flex;
+    align-items:center;
+    padding-left:30px;
+    font-size:28px;
+    font-style:italic;
+}
+
+/* ======================================================
+   LAYOUT
+====================================================== */
+.wrapper{
+    display:flex;
+    height:calc(100vh - 70px);
+}
+
+/* ======================================================
+   SIDEBAR
+====================================================== */
+.sidebar{
+    width:220px;
+    background:#8f9799;
+    padding-top:40px;
+    display:flex;
+    flex-direction:column;
+}
+
+.sidebar button{
+    background:none;
+    border:none;
+    color:white;
+    font-size:17px;
+    padding:18px 30px;
+    text-align:left;
+    cursor:pointer;
+}
+
+.sidebar button:hover{
+    background:rgba(255,255,255,.15);
+}
+
+/* ======================================================
+   CONTENT
+====================================================== */
+.content{
+    flex:1;
+    padding:40px 60px;
+    overflow:auto;
+}
+
+.section{ display:none; }
+.section.active{ display:block; }
+
+h1{
+    font-size:40px;
+    margin-bottom:25px;
+}
+
+/* ======================================================
+   STATS
+====================================================== */
+.stats{
+    display:flex;
+    gap:25px;
+    margin-bottom:30px;
+}
+
+.card{
+    flex:1;
+    background:#f4f3f2;
+    border-radius:24px;
+    padding:25px;
+    text-align:center;
+}
+
+.card span{
+    font-size:42px;
+    font-weight:bold;
+}
+
+/* ======================================================
+   GRAPH FILTER
+====================================================== */
+.time-filter{
+    margin-bottom:15px;
+    padding:8px 12px;
+    border-radius:10px;
+    border:none;
+}
+
+/* ======================================================
+   PRODUCTS GRID
+====================================================== */
+.products-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+    gap:20px;
+}
+
+.product{
+    background:#dcdad9;
+    border-radius:18px;
+    padding:12px;
+    text-align:center;
+    cursor:pointer;
+}
+
+.product img{
+    width:100%;
+    height:150px;
+    object-fit:cover;
+    border-radius:14px;
+}
+
+/* ======================================================
+   CREATE FORM
+====================================================== */
+.form-group{
+    margin-bottom:15px;
+}
+
+input, textarea{
+    width:60%;
+    padding:10px;
+    border-radius:12px;
+    border:none;
+    background:#f4f3f2;
+}
+
+textarea{
+    height:110px;
+}
+
+button.save-btn{
+    padding:10px 30px;
+    border:none;
+    border-radius:12px;
+    background:#8f9799;
+    color:white;
+}
+
+/* ======================================================
+   POPUP
+====================================================== */
+.overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.6);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    opacity:0;
+    visibility:hidden;
+}
+
+.overlay.active{
+    opacity:1;
+    visibility:visible;
+}
+
+.popup{
+    width:1050px;
+    height:600px;
+    background:white;
+    border-radius:24px;
+    display:flex;
+    overflow:hidden;
+    position:relative;
+}
+
+.popup-img{
+    width:55%;
+}
+
+.popup-img img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.popup-content{
+    width:45%;
+    padding:30px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+#pDesc{
+    height:180px;
+    overflow-y:auto;
+}
+
+.popup-actions{
+    display:flex;
+    gap:10px;
+}
+
+.popup-actions button{
+    padding:8px 15px;
+    border:none;
+    border-radius:10px;
+}
+
+.update{background:#8f9799;color:white;}
+.hide{background:#ccc;}
+.delete{background:#d55;color:white;}
+
+.close{
+    position:absolute;
+    top:10px;
+    right:15px;
+    font-size:20px;
+    cursor:pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="topbar">Vision Studio</div>
+
+<div class="wrapper">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <button onclick="showSection('dashboard')">Dashboard</button>
+    <button onclick="showSection('products')">Products</button>
+    <button onclick="showSection('create')">Create</button>
+    <button onclick="logout()">Logout</button>
+</div>
+
+<div class="content">
+
+<!-- ================= DASHBOARD ================= -->
+<div id="dashboard" class="section active">
+
+<h1>Dashboard</h1>
+
+<div class="stats">
+    <div class="card">Products<br><span id="prodCount">0</span></div>
+    <div class="card">Likes<br><span id="likeCount">0</span></div>
+    <div class="card">Views<br><span id="viewsCount">0</span></div>
+</div>
+
+<select id="timeFilter" class="time-filter" onchange="updateGraph()">
+    <option value="hour">Hour</option>
+    <option value="day">Day</option>
+    <option value="week">Week</option>
+    <option value="month">Month</option>
+</select>
+
+<canvas id="chart"></canvas>
+
+</div>
+
+
+<!-- ================= PRODUCTS ================= -->
+<div id="products" class="section">
+<h1>Products</h1>
+<div id="productsGrid" class="products-grid"></div>
+</div>
+
+
+<!-- ================= CREATE ================= -->
+<div id="create" class="section">
+<h1>Create Product</h1>
+
+<div class="form-group"><input id="cTitle" placeholder="Title"></div>
+<div class="form-group"><textarea id="cDesc" placeholder="Description"></textarea></div>
+<div class="form-group"><input id="cImg" placeholder="Image URL"></div>
+<div class="form-group"><input id="cLink" placeholder="Product Link"></div>
+<div class="form-group"><input id="cPin" placeholder="Pinterest Link"></div>
+
+<button class="save-btn" onclick="createProduct()">Save</button>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- ================= POPUP ================= -->
+<div id="overlay" class="overlay">
+
+<div class="popup">
+
+<span class="close" onclick="closePopup()">✕</span>
+
+<div class="popup-img">
+<img id="pImg">
+</div>
+
+<div class="popup-content">
+
+<input id="pTitle">
+<textarea id="pDesc"></textarea>
+<input id="pLink">
+<input id="pPin">
+
+<p>Likes: <b id="pLikes">0</b></p>
+
+<div class="popup-actions">
+<button class="update" onclick="updateProduct()">Save</button>
+<button class="hide" onclick="hideProduct()">Hide</button>
+<button class="delete" onclick="deleteProduct()">Delete</button>
+</div>
+
+</div>
+</div>
+</div>
+
+<script>
+
+let products=[];
+let views=[];
+
+/* ================= RENDER ================= */
+const grid=document.getElementById("productsGrid");
+
+function render(){
+
+    grid.innerHTML="";
+    let likes=0;
+
+    products.forEach((p,i)=>{
+
+        if(p.hidden) return;
+
+        likes+=p.likes||0;
+
+        grid.innerHTML+=`
+        <div class="product" onclick="openPopup(${i})">
+            <img src="${p.img}">
+            <p>${p.title}</p>
+        </div>`;
+    });
+
+    prodCount.innerText = products.filter(p=>!p.hidden).length;
+    likeCount.innerText=likes;
+    viewsCount.innerText=views.length;
+}
+
+
+/* ================= CREATE ================= */
+async function createProduct(){
+
+    await addDoc(productsRef,{
+        title:cTitle.value,
+        desc:cDesc.value,
+        img:cImg.value,
+        productLink:cLink.value,
+        pinterestLink:cPin.value,
+        likes:0,
+        hidden:false
+    });
+
+    loadProducts();
+}
+
+
+/* ================= POPUP ================= */
+let current=0;
+
+function openPopup(i){
+
+    current=i;
+
+    const p=products[i];
+
+    pImg.src=p.img;
+    pTitle.value=p.title;
+    pDesc.value=p.desc;
+    pLink.value=p.productLink;
+    pPin.value=p.pinterestLink;
+    pLikes.innerText=p.likes;
+
+    views.push(Date.now());
+    updateGraph();
+
+    overlay.classList.add("active");
+}
+
+function closePopup(){ overlay.classList.remove("active"); }
+
+
+/* ================= UPDATE (Firestore) ================= */
+async function updateProduct(){
+
+    const id = products[current].id;
+
+    await updateDoc(doc(db,"products",id),{
+        title:pTitle.value,
+        desc:pDesc.value,
+        productLink:pLink.value,
+        pinterestLink:pPin.value
+    });
+
+    closePopup();
+    loadProducts();
+}
+
+
+/* ================= HIDE (Firestore) ================= */
+async function hideProduct(){
+
+    const id = products[current].id;
+
+    await updateDoc(doc(db,"products",id),{
+        hidden:true
+    });
+
+    closePopup();
+    loadProducts();
+}
+
+
+/* ================= DELETE (Firestore) ================= */
+async function deleteProduct(){
+
+    const id = products[current].id;
+
+    await deleteDoc(doc(db,"products",id));
+
+    closePopup();
+    loadProducts();
+}
+
+
+/* ================= GRAPH ================= */
+let chart;
+
+function updateGraph(){
+
+    const filter=timeFilter.value;
+    const now=Date.now();
+
+    const ranges={
+        hour:3600000,
+        day:86400000,
+        week:604800000,
+        month:2592000000
+    };
+
+    const range=ranges[filter];
+
+    const count=views.filter(v=>now-v<range).length;
+
+    if(chart) chart.destroy();
+
+    chart=new Chart(document.getElementById("chart"),{
+        type:'line',
+        data:{
+            labels:[filter],
+            datasets:[{label:"Views",data:[count]}]
+        }
+    });
+
+    viewsCount.innerText=views.length;
+}
+
+render();
+
+
+function showSection(id){
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+
+</script>
+
+
+
+<!-- ===== FIREBASE MODULE (NO UI CHANGES) ===== -->
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC97AoQ0Pzl1SL59fCrLtnlqTOoJjAy7hE",
+  authDomain: "vision-studio-84bba.firebaseapp.com",
+  projectId: "vision-studio-84bba",
+  storageBucket: "vision-studio-84bba.firebasestorage.app",
+  messagingSenderId: "1004171623695",
+  appId: "1:1004171623695:web:c044eebd2cfbd7b904d27a"
+};
+
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+window.addDoc = addDoc;
+window.updateDoc = updateDoc;
+window.deleteDoc = deleteDoc;
+window.doc = doc;
+
+
+window.db = db; // make global
+
+window.productsRef = collection(db,"products");
+
+
+/* ================= LOAD PRODUCTS ================= */
+window.loadProducts = async function(){
+
+  const snapshot = await getDocs(productsRef);
+
+  products = snapshot.docs.map(d => ({
+    id:d.id,
+    ...d.data()
+  }));
+
+  render();
+  updateGraph();
+
+};
+
+
+/* ================= AUTH PROTECTION ================= */
+onAuthStateChanged(auth,(user)=>{
+  if(!user){
+    window.location.href="login.html";
+  }
+});
+
+
+/* ================= LOGOUT ================= */
+window.logout = function(){
+  signOut(auth).then(()=>{
+    window.location.href="login.html";
+  });
+};
+
+
+loadProducts();
+
+</script>
+
+
+
+</body>
+</html>

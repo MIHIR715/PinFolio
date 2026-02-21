@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>Login</title>
+
+<style>
+
+/* ================= RESET ================= */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: Georgia, serif;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#ebe9e8;
+}
+
+/* ================= LOGIN CARD ================= */
+.login-box{
+    width:420px;
+    background:#d9d7d6;
+    padding:50px 40px;
+    border-radius:30px;
+    text-align:center;
+    box-shadow:0 20px 40px rgba(0,0,0,.1);
+}
+
+h1{
+    margin-bottom:40px;
+    font-size:36px;
+    font-style:italic;
+}
+
+/* ================= INPUTS ================= */
+.input-group{
+    margin-bottom:25px;
+}
+
+input{
+    width:100%;
+    padding:12px 18px;
+    border-radius:20px;
+    border:none;
+    background:#f4f3f2;
+    font-size:15px;
+}
+
+/* ================= BUTTON ================= */
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:20px;
+    background:#8f9799;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+button:hover{
+    opacity:.9;
+}
+
+.error{
+    margin-top:15px;
+    color:#c33;
+    font-size:14px;
+}
+
+.loading{
+    margin-top:10px;
+    font-size:13px;
+    color:#555;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="login-box">
+
+    <h1>Vision Studio Login</h1>
+
+    <form id="loginForm">
+
+        <div class="input-group">
+            <input type="email" id="email" placeholder="Email" required>
+        </div>
+
+        <div class="input-group">
+            <input type="password" id="password" placeholder="Password" required>
+        </div>
+
+        <button type="submit">Login</button>
+
+        <div class="loading" id="loading"></div>
+        <div class="error" id="errorMsg"></div>
+
+    </form>
+
+</div>
+
+
+<!-- ================= FIREBASE AUTH ================= -->
+<script type="module">
+
+/* ================= IMPORTS ================= */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+/* ================= YOUR FIREBASE CONFIG ================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyC97AoQ0Pzl1SL59fCrLtnlqTOoJjAy7hE",
+  authDomain: "vision-studio-84bba.firebaseapp.com",
+  projectId: "vision-studio-84bba",
+  storageBucket: "vision-studio-84bba.firebasestorage.app",
+  messagingSenderId: "1004171623695",
+  appId: "1:1004171623695:web:c044eebd2cfbd7b904d27a"
+};
+
+
+/* ================= INIT ================= */
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+
+/* ================= AUTO REDIRECT IF LOGGED ================= */
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        window.location.href = "dashboard.html";
+    }
+});
+
+
+/* ================= LOGIN HANDLER ================= */
+
+const form = document.getElementById("loginForm");
+const errorMsg = document.getElementById("errorMsg");
+const loading = document.getElementById("loading");
+
+form.addEventListener("submit", async (e) => {
+
+    e.preventDefault();
+
+    errorMsg.innerText = "";
+    loading.innerText = "Checking credentials...";
+
+    const email = document.getElementById("email").value;
+    const pass = document.getElementById("password").value;
+
+    try {
+
+        await signInWithEmailAndPassword(auth, email, pass);
+
+        loading.innerText = "Success ✓ Redirecting...";
+
+        window.location.href = "dashboard.html";
+
+    }
+    catch (err) {
+
+        loading.innerText = "";
+
+        switch(err.code){
+            case "auth/user-not-found":
+                errorMsg.innerText="User not found";
+                break;
+            case "auth/wrong-password":
+                errorMsg.innerText="Wrong password";
+                break;
+            case "auth/invalid-email":
+                errorMsg.innerText="Invalid email format";
+                break;
+            default:
+                errorMsg.innerText=err.message;
+        }
+    }
+
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Vision Studio</title>
+
+<style>
+
+/* ================= RESET ================= */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: Georgia, serif;
+}
+
+body{
+    background:#e9e7e6;
+    color:#333;
+}
+
+
+/* ================= NAVBAR ================= */
+.navbar{
+    position:fixed;
+    top:0;
+    width:100%;
+    background:#ecebea;
+    padding:20px 60px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    z-index:1000;
+}
+
+.logo{
+    font-size:26px;
+    letter-spacing:2px;
+}
+
+.nav-links{
+    background:#dcdcdc;
+    padding:10px 30px;
+    border-radius:12px;
+}
+
+.nav-links a{
+    margin:0 15px;
+    text-decoration:none;
+    color:#333;
+    font-weight:600;
+}
+
+
+/* ================= CONTAINER ================= */
+.container{
+    padding-top:110px;
+    width:90%;
+    margin:auto;
+}
+
+
+/* ================= HERO BIG BOX ================= */
+/* ================= HERO CAROUSEL FIXED ================= */
+.hero{
+    background:#dddcdc;
+    border-radius:30px;
+
+    width:100%;
+    height:420px;        /* 🔒 fixed size */
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:50px 70px;   /* same spacing look */
+    overflow:hidden;
+}
+
+
+
+.hero img{
+    width:420px;         /* fixed image width */
+    height:320px;        /* fixed image height */
+
+    object-fit:contain;  /* 🔥 shows full shoe */
+    object-position:left center;
+
+    flex-shrink:0;       /* prevents resizing */
+}
+
+.hero-text{
+    font-size:52px;
+    color:#444;
+
+    flex:1;
+    text-align:right;   /* like your design */
+    letter-spacing:6px;
+}
+
+
+
+/* ================= PRODUCTS TITLE ================= */
+.products-title{
+    text-align:center;
+    margin:70px 0 40px;
+}
+
+.products-title span{
+    background:#d6d4d3;
+    padding:16px 50px;
+    border-radius:14px;
+    font-size:30px;
+    letter-spacing:4px;
+}
+
+
+/* ================= PRODUCT GRID ================= */
+.grid{
+    column-count:4;
+    column-gap:30px;
+}
+
+
+.card{
+    break-inside:avoid;
+    margin-bottom:30px;
+    background:#dcdcdc;
+    border-radius:24px;
+    padding:18px;
+    text-align:center;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-8px) scale(1.03);
+}
+
+/* FULL IMAGE VISIBLE */
+.card img{
+    width:100%;
+    height:auto;
+    display:block;
+    border-radius:18px;
+}
+
+
+.card h3{
+    margin-top:18px;
+    font-size:22px;
+    letter-spacing:2px;
+}
+
+
+/* ================= OVERLAY ================= */
+.overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.55);
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    opacity:0;
+    visibility:hidden;
+    transition:.3s;
+    z-index:2000;
+}
+
+.overlay.active{
+    opacity:1;
+    visibility:visible;
+}
+
+
+/* ================= MODAL BIG BOX ================= */
+.popup{
+    width:90%;
+    max-width:1250px;
+    height:650px;
+
+    background:#f4f4f4;
+    border-radius:35px;
+
+    display:flex;
+    overflow:hidden;
+    position:relative;
+}
+
+/* LEFT IMAGE */
+.popup-img{
+    width:45%;
+    height:100%;
+    
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:#ececec;   /* clean background like hero */
+    padding:30px;
+}
+
+
+.popup-img img{
+    max-width:100%;
+    max-height:100%;
+
+    width:auto;
+    height:auto;
+
+    object-fit:contain;   /* 🔥 FULL IMAGE visible */
+}
+
+/* RIGHT SIDE */
+.popup-content{
+    width:55%;
+    padding:50px;
+    display:flex;
+    flex-direction:column;
+    gap:25px;
+}
+
+.popup-content h2{
+    font-size:46px;
+    letter-spacing:5px;
+}
+
+/* ===== FIXED SCROLLABLE DESCRIPTION ===== */
+.desc-box{
+    border:2px solid #c9c9c9;
+    border-radius:25px;
+    padding:25px;
+    height:220px;
+    overflow-y:auto;
+    font-size:20px;
+    color:#777;
+    background:white;
+}
+
+/* BUTTONS */
+.btns{
+    display:flex;
+    gap:25px;
+}
+
+.btn{
+    background:#dedede;
+    border:none;
+    padding:14px 35px;
+    border-radius:30px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.likes{
+    margin-top:10px;
+    font-size:20px;
+    cursor:pointer;
+}
+
+.close{
+    position:absolute;
+    top:15px;
+    right:25px;
+    font-size:30px;
+    cursor:pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+<div class="navbar">
+    <div class="logo">VISION STUDIO</div>
+    <div class="nav-links">
+        <a href="#">Home</a>
+        <a href="#">Products</a>
+        <a href="login.html">Login</a>
+    </div>
+</div>
+
+
+<div class="container">
+
+<!-- ================= HERO ================= -->
+<div class="hero">
+    <img id="heroImg">
+    <div class="hero-text" id="heroText"></div>
+</div>
+
+
+<!-- ================= PRODUCTS ================= -->
+<div class="products-title">
+    <span>PRODUCTS</span>
+</div>
+
+<div class="grid" id="grid"></div>
+
+</div>
+
+
+
+<!-- ================= POPUP MODAL ================= -->
+<div class="overlay" id="overlay">
+    <div class="popup">
+
+        <span class="close" onclick="closePopup()">✕</span>
+
+        <div class="popup-img">
+            <img id="bigImg">
+        </div>
+
+        <div class="popup-content">
+            <h2 id="bigTitle"></h2>
+
+            <div class="desc-box" id="bigDesc"></div>
+
+            <div class="btns">
+                <button class="btn" id="prodBtn">PRODUCT LINK</button>
+                <button class="btn" id="pinBtn">PINTEREST LINK</button>
+            </div>
+
+            <div class="likes" id="likeBtn">♡ 0 Likes</div>
+        </div>
+
+    </div>
+</div>
+
+
+
+<script>
+/* ================= GLOBAL VARIABLES ================= */
+let products = [];
+const grid = document.getElementById("grid");
+
+
+/* ================= SHARED STORAGE ================= */
+
+
+
+
+/* ================= HERO ================= */
+
+let heroIndex=0;
+
+function updateHero(){
+    if(products.length===0) return;
+
+    heroImg.style.opacity = 0;
+
+    setTimeout(()=>{
+        heroImg.src = products[heroIndex].img;
+        heroImg.style.opacity = 1;
+        heroText.innerText = products[heroIndex].title;
+    },200);
+}
+
+
+updateHero();
+
+setInterval(()=>{
+    if(products.length===0) return;
+    heroIndex=(heroIndex+1)%products.length;
+    updateHero();
+},3000);
+
+
+/* ================= GRID ================= */
+
+
+
+/* ================= POPUP ================= */
+
+let currentIndex=0;
+const overlay=document.getElementById("overlay");
+
+function openPopup(i){
+    currentIndex=i;
+    const p=products[i];
+
+    bigImg.src=p.img;
+    bigTitle.innerText=p.title;
+    bigDesc.innerText=p.desc;
+
+    prodBtn.onclick=()=>window.open(p.productLink || "#","_blank");
+    pinBtn.onclick=()=>window.open(p.pinterestLink || "#","_blank");
+
+    updateLikes();
+    overlay.classList.add("active");
+}
+
+function closePopup(){
+    overlay.classList.remove("active");
+}
+
+overlay.addEventListener("click",e=>{
+    if(e.target===overlay) closePopup();
+});
+
+
+/* ================= LIKES ================= */
+
+function updateLikes(){
+    likeBtn.innerText="♡ "+(products[currentIndex].likes||0)+" Likes";
+}
+
+
+
+</script>
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  updateDoc,
+  doc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+/* ========= Firebase init ========= */
+const firebaseConfig = {
+  apiKey: "AIzaSyC97AoQ0Pzl1SL59fCrLtnlqTOoJjAy7hE",
+  authDomain: "vision-studio-84bba.firebaseapp.com",
+  projectId: "vision-studio-84bba",
+  storageBucket: "vision-studio-84bba.firebasestorage.app",
+  messagingSenderId: "1004171623695",
+  appId: "1:1004171623695:web:c044eebd2cfbd7b904d27a"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const productsRef = collection(db,"products");
+
+
+/* ========= LOAD PRODUCTS FROM FIRESTORE ========= */
+
+window.products = [];
+
+async function loadProducts(){
+
+  const snapshot = await getDocs(productsRef);
+
+  products = snapshot.docs
+    .map(d => ({ id:d.id, ...d.data() }))
+    .filter(p=>!p.hidden);
+
+  renderProducts();
+  updateHero();
+}
+
+loadProducts();
+
+
+/* ========= RENDER GRID ========= */
+
+function renderProducts(){
+
+  grid.innerHTML="";
+
+  products.forEach((p,i)=>{
+
+    const card=document.createElement("div");
+    card.className="card";
+
+    card.innerHTML=`
+      <img src="${p.img}">
+      <h3>${p.title}</h3>
+    `;
+
+    card.onclick=()=>openPopup(i);
+
+    grid.appendChild(card);
+  });
+}
+
+
+/* ========= LIKE BUTTON (Firestore) ========= */
+
+likeBtn.onclick = async function(){
+
+  const id = products[currentIndex].id;
+
+  await updateDoc(doc(db,"products",id),{
+    likes:(products[currentIndex].likes||0)+1
+  });
+
+  loadProducts();
+};
+
+</script>
+
+
+</body>
+</html>
